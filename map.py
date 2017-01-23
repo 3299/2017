@@ -10,12 +10,15 @@ class Map(object):
         self.rightJ      = 2
 
         # Motors have suffix 'M'. All motors use PWM.
-        self.frontLeftM  = 1
-        self.frontRightM = 2
+        self.frontLeftM  = 2
+        self.frontRightM = 1
         self.backLeftM   = 0
         self.backRightM  = 3
 
         self.beltM       = 9
+
+        # Soleniods
+        self.gearSol = {'in': 0, 'out': 2}
 
         # Sensors have suffix 'S'. Gyro and sonar use analog in, everything else uses the DIO.
         self.gyroS       = 0

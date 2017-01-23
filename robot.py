@@ -11,7 +11,7 @@ from components.vision import Vision
 from components.chassis import Chassis
 from components.belt import Belt
 from components.sonic import Sonic
-from components.arduino import Arduino
+from components.gear import GearSol
 from components.ledStrip import LedStrip
 from guide import Guiding
 
@@ -20,11 +20,14 @@ class MyRobot(wpilib.SampleRobot):
         self.C = Component() # Components inits all connected motors, sensors, and joysticks. See components.py.
 
         # Network Table for Pi (for vision tracking)
-        self.sd = NetworkTables.getTable("vision")
+        self.sd = NetworkTables.getTable("SmartDashboard")
+        self.sd.putNumberArray('x', [])
+        self.sd.putNumberArray('y', [])
 
         # Setup subsystems
         self.drive    = Chassis(self.C.driveTrain, self.C.gyroS)
         self.belt     = Belt(self.C.beltM)
+        self.gearSol  = GearSol(self.C.gearSol)
         self.sonic    = Sonic(self.C.sonic)
         self.ledStrip = LedStrip(self.C.ledStrip)
 
@@ -36,14 +39,16 @@ class MyRobot(wpilib.SampleRobot):
         # runs when robot is enabled
         while self.isOperatorControl() and self.isEnabled():
             # Left trigger turns on vision guiding
-            if (self.C.leftJ.getRawButton(0) == True):
-                self.guide.guideCamera()
+            if (self.C.leftJ.getRawButton(1) == True):
+                self.guide.guideCamera(self.C.leftJ.getX())
             else:
                 # Drive
-                self.drive.run(self.C.leftJ.getX(), self.C.leftJ.getY(), self.C.middleJ.getDirectionDegrees())
+                self.drive.run(self.C.leftJ.getX(), self.C.leftJ.getY(), self.C.middleJ.getX())
 
                 # Components
                 self.belt.run(self.C.rightJ.getRawButton(4), self.C.rightJ.getRawButton(5))
+                self.gearSol.run(self.C.middleJ.getRawButton(1))
+
                 self.ledStrip.run({
                     'r': helpers.remap(self.C.leftJ.getY(), -1, 1, 0, 255),
                     'g': helpers.remap(self.C.leftJ.getX(), -1, 1, 0, 255),
