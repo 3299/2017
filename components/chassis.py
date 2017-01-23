@@ -11,8 +11,11 @@ class Chassis(object):
 
         self.Kp    = 0.03
 
-    def run(self, leftX, leftY, rightAngle):
-        if (rightAngle == 90 or rightAngle == 180 or rightAngle == 270 and leftX == 0):
-            return
+    def run(self, leftX, leftY, rightX):
+        self.drive.mecanumDrive_Cartesian(leftX, leftY, rightX, self.gyro.getAngle())
 
-        self.drive.mecanumDrive_Polar(leftY, rightAngle, leftX)
+    def arcadeDrive(self, x, y):
+        self.drive.arcadeDrive(x, y)
+
+    def set(self, power, direction, rotation):
+        self.drive.mecanumDrive_Polar(power, direction, rotation)
