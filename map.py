@@ -18,12 +18,11 @@ class Map(object):
         self.beltM       = 9
 
         # Soleniods
-        self.gearSol = {'in': 0, 'out': 2}
+        self.gearSol     = {'in': 0, 'out': 2}
 
         # Sensors have suffix 'S'. Gyro and sonar use analog in, everything else uses the DIO.
         self.gyroS       = 0
-        self.sonicTrig   = 2
-        self.sonicEcho   = 3
+        self.sonicS      = {'left': 1, 'right': 2}
 
         # LED strip
         self.ledStrip    = {'r': 4, 'g': 5, 'b': 6}

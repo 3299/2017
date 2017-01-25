@@ -11,9 +11,9 @@ class Component(object):
         Mapping = Map()
 
         # Init drivetrain
-        self.driveTrain = wpilib.RobotDrive(Mapping.frontLeftM, Mapping.backLeftM, Mapping.frontRightM, Mapping.backRightM)
+        self.driveTrain = wpilib.RobotDrive(wpilib.TalonSRX(Mapping.frontLeftM), wpilib.TalonSRX(Mapping.backLeftM), wpilib.TalonSRX(Mapping.frontRightM), wpilib.TalonSRX(Mapping.backRightM))
+        self.driveTrain.setInvertedMotor(0, True)
         self.driveTrain.setInvertedMotor(1, True)
-        self.driveTrain.setInvertedMotor(2, True)
         self.driveTrain.setInvertedMotor(3, True)
         self.driveTrain.setExpiration(0.1)
 
@@ -21,7 +21,7 @@ class Component(object):
         self.beltM      = wpilib.Talon(Mapping.beltM)
 
         # Init soleniods
-        self.gearSol = {'in': wpilib.Solenoid(Mapping.gearSol['in']), 'out': wpilib.Solenoid(Mapping.gearSol['out'])}
+        self.gearSol    = {'in': wpilib.Solenoid(Mapping.gearSol['in']), 'out': wpilib.Solenoid(Mapping.gearSol['out'])}
 
         # Init joysticks
         self.leftJ      = wpilib.Joystick(Mapping.leftJ)
@@ -30,7 +30,7 @@ class Component(object):
 
         # Init sensors
         self.gyroS      = wpilib.AnalogGyro(Mapping.gyroS)
-        self.sonic      = wpilib.Ultrasonic(Mapping.sonicTrig, Mapping.sonicEcho)
+        self.sonicS     = {'left': wpilib.AnalogInput(Mapping.sonicS['left']), 'right': wpilib.AnalogInput(Mapping.sonicS['right'])}
 
         # Init LED strip
         self.ledStrip   = {'r': wpilib.PWM(Mapping.ledStrip['r']), 'g': wpilib.PWM(Mapping.ledStrip['g']), 'b': wpilib.PWM(Mapping.ledStrip['b'])}

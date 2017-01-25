@@ -7,9 +7,7 @@ from networktables import NetworkTables
 from inits import Component
 import helpers
 
-from components.vision import Vision
 from components.chassis import Chassis
-from components.belt import Belt
 from components.sonic import Sonic
 from components.gear import GearSol
 from components.ledStrip import LedStrip
@@ -20,15 +18,15 @@ class MyRobot(wpilib.SampleRobot):
         self.C = Component() # Components inits all connected motors, sensors, and joysticks. See components.py.
 
         # Network Table for Pi (for vision tracking)
+        # TODO: move this elsewhere
         self.sd = NetworkTables.getTable("SmartDashboard")
         self.sd.putNumberArray('x', [])
         self.sd.putNumberArray('y', [])
 
         # Setup subsystems
         self.drive    = Chassis(self.C.driveTrain, self.C.gyroS)
-        self.belt     = Belt(self.C.beltM)
         self.gearSol  = GearSol(self.C.gearSol)
-        self.sonic    = Sonic(self.C.sonic)
+        self.sonic    = Sonic(self.C.sonicS)
         self.ledStrip = LedStrip(self.C.ledStrip)
 
         self.guide    = Guiding(self.sd, self.sonic, self.drive)
@@ -43,11 +41,10 @@ class MyRobot(wpilib.SampleRobot):
                 self.guide.guideCamera(self.C.leftJ.getX())
             else:
                 # Drive
-                self.drive.run(self.C.leftJ.getX(), self.C.leftJ.getY(), self.C.middleJ.getX())
+                self.drive.run(self.C.leftJ.getX(), self.C.leftJ.getY(), self.C.middleJ.getX(), self.C.middleJ.getY())
 
                 # Components
-                self.belt.run(self.C.rightJ.getRawButton(4), self.C.rightJ.getRawButton(5))
-                self.gearSol.run(self.C.middleJ.getRawButton(1))
+                self.gearSol.run(self.C.middleJ.getRawButton(2), self.C.middleJ.getRawButton(3))
 
                 self.ledStrip.run({
                     'r': helpers.remap(self.C.leftJ.getY(), -1, 1, 0, 255),

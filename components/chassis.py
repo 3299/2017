@@ -9,10 +9,13 @@ class Chassis(object):
         self.drive = drive
         self.gyro  = gyro
 
-        self.Kp    = 0.03
+    def run(self, leftX, leftY, rightX, rightY):
+        #self.drive.mecanumDrive_Cartesian(leftY, leftX, rightX, 0)
+        powerY = (leftY + rightY) / 2 # average of Y axis for going forward/backward
+        powerX = (leftX + rightX) / 2 # average of X axis for strafing
+        rotate = (leftY - rightY) / 2
 
-    def run(self, leftX, leftY, rightX):
-        self.drive.mecanumDrive_Cartesian(leftX, leftY, rightX, self.gyro.getAngle())
+        self.drive.mecanumDrive_Cartesian(powerX, powerY, rotate, 0)
 
     def arcadeDrive(self, x, y):
         self.drive.arcadeDrive(x, y)
