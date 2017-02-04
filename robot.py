@@ -10,6 +10,7 @@ import helpers
 from components.chassis import Chassis
 from components.sonic import Sonic
 from components.gear import GearSol
+from components.collector import BallCollector
 from components.ledStrip import LedStrip
 from guide import Guiding
 
@@ -24,10 +25,11 @@ class MyRobot(wpilib.SampleRobot):
         self.sd.putNumberArray('y', [])
 
         # Setup subsystems
-        self.drive    = Chassis(self.C.driveTrain, self.C.gyroS)
-        self.gearSol  = GearSol(self.C.gearSol)
-        self.sonic    = Sonic(self.C.sonicS)
-        self.ledStrip = LedStrip(self.C.ledStrip)
+        self.drive     = Chassis(self.C.driveTrain, self.C.gyroS)
+        self.gearSol   = GearSol(self.C.gearSol)
+        self.collector = BallCollector(self.C.collectorM)
+        self.sonic     = Sonic(self.C.sonicS)
+        self.ledStrip  = LedStrip(self.C.ledStrip)
 
         self.guide    = Guiding(self.sd, self.sonic, self.drive)
 
@@ -36,15 +38,28 @@ class MyRobot(wpilib.SampleRobot):
 
         # runs when robot is enabled
         while self.isOperatorControl() and self.isEnabled():
+            self.sonic.run()
             # Left trigger turns on vision guiding
             if (self.C.leftJ.getRawButton(1) == True):
                 self.guide.guideCamera(self.C.leftJ.getX())
             else:
+                if (self.C.leftJ.getRawButton(9) == True):
+                    self.guide.guideSonic()
+
+                if (self.C.middleJ.getRawButton(8) == True):
+                    print(self.sonic.getCm('left'))
+                if (self.C.middleJ.getRawButton(9) == True):
+                    print(self.sonic.getCm('right'))
+
+                if (self.C.leftJ.getRawButton(8) == True):
+                    print(self.sonic.getCm('left') - self.sonic.getCm('right'))
+
                 # Drive
-                self.drive.run(self.C.leftJ.getX(), self.C.leftJ.getY(), self.C.middleJ.getX(), self.C.middleJ.getY())
+                self.drive.run(self.C.leftJ.getX(), self.C.leftJ.getY(), self.C.middleJ.getX(), self.C.middleJ.getY(), self.C.leftJ.getRawButton(2), self.C.middleJ.getRawButton(2))
 
                 # Components
-                self.gearSol.run(self.C.middleJ.getRawButton(2), self.C.middleJ.getRawButton(3))
+                self.gearSol.run(self.C.middleJ.getRawButton(1))
+                self.collector.run(self.C.rightJ.getRawButton(1))
 
                 self.ledStrip.run({
                     'r': helpers.remap(self.C.leftJ.getY(), -1, 1, 0, 255),
