@@ -35,3 +35,18 @@ def remap( x, oMin, oMax, nMin, nMax ): # thanks stackoverflow.com/a/15537393
         result = newMax - portion
 
     return result
+
+'''
+Given a Cartesian x,y position, this 'snaps'
+it to the nearest angle, in degrees (the
+number of snappable angles is determined by
+`divisions`). Intended to be used with joystick
+values.
+'''
+def snap(divisions, x, y):
+    if (x == 0):
+        return 0
+
+    result = round(math.atan2(y, x) / (2 * math.pi / divisions) + divisions, 0) % divisions
+
+  return result * (360 / divisions)
