@@ -11,6 +11,8 @@ from components.chassis import Chassis
 from components.sonic import Sonic
 from components.gear import GearSol
 from components.collector import BallCollector
+from components.climber import Climber
+from components.shooter import Shooter
 from components.ledStrip import LedStrip
 from guide import Guiding
 
@@ -28,6 +30,8 @@ class MyRobot(wpilib.SampleRobot):
         self.drive     = Chassis(self.C.driveTrain, self.C.gyroS)
         self.gearSol   = GearSol(self.C.gearSol)
         self.collector = BallCollector(self.C.collectorM)
+        self.shooter   = Shooter(self.C.shooterM, self.C.ballServos)
+        self.climb     = Climber(self.C.climbM)
         self.sonic     = Sonic(self.C.sonicS)
         self.ledStrip  = LedStrip(self.C.ledStrip)
 
@@ -38,34 +42,19 @@ class MyRobot(wpilib.SampleRobot):
 
         # runs when robot is enabled
         while self.isOperatorControl() and self.isEnabled():
-            self.sonic.run()
-            # Left trigger turns on vision guiding
-            if (self.C.leftJ.getRawButton(1) == True):
-                self.guide.guideCamera(self.C.leftJ.getX())
+            # Drive
+            self.drive.run(self.C.leftJ.getX(), self.C.leftJ.getY(), self.C.middleJ.getX(), self.C.middleJ.getY(), self.C.leftJ.getRawButton(2), self.C.middleJ.getRawButton(2))
+
+            # Components
+            self.gearSol.run(self.C.middleJ.getRawButton(1))
+            self.collector.run(self.C.rightJ.getRawButton(4))
+            self.shooter.run(self.C.rightJ.getRawButton(2), self.C.rightJ.getRawButton(3))
+            self.climb.run(self.C.rightJ.getRawButton(1))
+
+            if (self.C.allienceS.get() == True):
+                self.ledStrip.run({'r': True, 'g': False, 'b': False})
             else:
-                if (self.C.leftJ.getRawButton(9) == True):
-                    self.guide.guideSonic()
-
-                if (self.C.middleJ.getRawButton(8) == True):
-                    print(self.sonic.getCm('left'))
-                if (self.C.middleJ.getRawButton(9) == True):
-                    print(self.sonic.getCm('right'))
-
-                if (self.C.leftJ.getRawButton(8) == True):
-                    print(self.sonic.getCm('left') - self.sonic.getCm('right'))
-
-                # Drive
-                self.drive.run(self.C.leftJ.getX(), self.C.leftJ.getY(), self.C.middleJ.getX(), self.C.middleJ.getY(), self.C.leftJ.getRawButton(2), self.C.middleJ.getRawButton(2))
-
-                # Components
-                self.gearSol.run(self.C.middleJ.getRawButton(1))
-                self.collector.run(self.C.rightJ.getRawButton(1))
-
-                self.ledStrip.run({
-                    'r': helpers.remap(self.C.leftJ.getY(), -1, 1, 0, 255),
-                    'g': helpers.remap(self.C.leftJ.getX(), -1, 1, 0, 255),
-                    'b': helpers.remap(self.C.middleJ.getY(), -1, 1, 0, 255)
-                })
+                self.ledStrip.run({'r': False, 'g': False, 'b': True})
 
             wpilib.Timer.delay(0.002) # wait for a motor update time
 

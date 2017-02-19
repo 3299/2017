@@ -7,6 +7,6 @@ class LedStrip(object):
         self.pins = pins
 
     def run(self, output):
-        self.pins['r'].setRaw(int(output['r']))
-        self.pins['g'].setRaw(int(output['g']))
-        self.pins['b'].setRaw(int(output['b']))
+        self.pins['r'].set(output['r'])
+        self.pins['g'].set(output['g'])
+        self.pins['b'].set(output['b'])

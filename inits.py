@@ -17,7 +17,12 @@ class Component(object):
         self.driveTrain.setExpiration(0.1)
 
         # Init other motors
-        self.collectorM      = wpilib.Jaguar(Mapping.collectorM)
+        self.collectorM  = wpilib.Talon(Mapping.collectorM)
+        self.shooterM    = wpilib.Talon(Mapping.shooterM)
+        self.climbM      = wpilib.Talon(Mapping.climbM)
+
+        # Init servos
+        self.ballServos = {'servo1': wpilib.Servo(Mapping.servo1), 'servo2': wpilib.Servo(Mapping.servo2)}
 
         # Init soleniods
         self.gearSol    = wpilib.DoubleSolenoid(Mapping.gearSol['out'], Mapping.gearSol['in'])
@@ -30,6 +35,7 @@ class Component(object):
         # Init sensors
         self.gyroS      = wpilib.AnalogGyro(Mapping.gyroS)
         self.sonicS     = {'leftS': wpilib.AnalogInput(Mapping.sonicS['left']), 'leftR': wpilib.DigitalOutput(Mapping.sonicS['left']), 'rightS': wpilib.AnalogInput(Mapping.sonicS['right']), 'rightR': wpilib.DigitalOutput(Mapping.sonicS['right'])}
+        self.allienceS  = wpilib.DigitalInput(Mapping.allienceS)
 
         # Init LED strip
-        self.ledStrip   = {'r': wpilib.PWM(Mapping.ledStrip['r']), 'g': wpilib.PWM(Mapping.ledStrip['g']), 'b': wpilib.PWM(Mapping.ledStrip['b'])}
+        self.ledStrip   = {'r': wpilib.DigitalOutput(Mapping.ledStrip['r']), 'g': wpilib.DigitalOutput(Mapping.ledStrip['g']), 'b': wpilib.DigitalOutput(Mapping.ledStrip['b'])}

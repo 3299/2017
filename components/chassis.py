@@ -44,9 +44,9 @@ class Chassis(object):
         # snap the outputs to a standard angle
         direction = helpers.snap(8, powerX, powerY)
 
-        self.drive.mecanumDrive_Polar((powerX + powerY) / 2, direction, rotate)
+        #self.drive.mecanumDrive_Polar((powerX + powerY) / 2, direction, rotate)
 
-        #self.drive.mecanumDrive_Cartesian(powerX, powerY, rotate, 0)
+        self.drive.mecanumDrive_Cartesian(powerX, powerY, rotate, 0)
 
     def arcadeDrive(self, x, y):
         self.drive.arcadeDrive(x, y)

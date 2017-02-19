@@ -10,12 +10,17 @@ class Map(object):
         self.rightJ      = 2
 
         # Motors have suffix 'M'. All motors use PWM.
-        self.frontLeftM  = 0
+        self.frontLeftM  = 3
         self.frontRightM = 1
-        self.backLeftM   = 2
-        self.backRightM  = 3
+        self.backLeftM   = 6
+        self.backRightM  = 0
 
-        self.collectorM  = 9
+        self.collectorM  = 5
+        self.shooterM    = 2
+        self.climbM      = 4
+
+        self.servo1      = 7
+        self.servo2      = 8
 
         # Soleniods
         self.gearSol     = {'in': 2, 'out': 0}
@@ -23,8 +28,9 @@ class Map(object):
         # Sensors have suffix 'S'. Gyro and sonar use analog in, everything else uses the DIO.
         self.gyroS       = 0
         self.sonicS      = {'left': 1, 'right': 2} # pin 4 on both sensors is also connected to the same DIO pin
+        self.allienceS   = 0
 
         # LED strip
-        self.ledStrip    = {'r': 4, 'g': 5, 'b': 6}
+        self.ledStrip    = {'r': 7, 'g': 8, 'b': 9}
 
         pass

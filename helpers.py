@@ -2,6 +2,8 @@
 Provides various helper functions.
 """
 
+import math
+
 def remap( x, oMin, oMax, nMin, nMax ): # thanks stackoverflow.com/a/15537393
     #range check
     if oMin == oMax:
@@ -49,4 +51,4 @@ def snap(divisions, x, y):
 
     result = round(math.atan2(y, x) / (2 * math.pi / divisions) + divisions, 0) % divisions
 
-  return result * (360 / divisions)
+    return result * (360 / divisions)
