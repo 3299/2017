@@ -20,22 +20,13 @@ class MyRobot(wpilib.SampleRobot):
     def robotInit(self):
         self.C = Component() # Components inits all connected motors, sensors, and joysticks. See components.py.
 
-        # Network Table for Pi (for vision tracking)
-        # TODO: move this elsewhere
-        self.sd = NetworkTables.getTable("SmartDashboard")
-        self.sd.putNumberArray('x', [])
-        self.sd.putNumberArray('y', [])
-
         # Setup subsystems
         self.drive     = Chassis(self.C.driveTrain, self.C.gyroS)
-        self.gearSol   = GearSol(self.C.gearSol)
         self.collector = BallCollector(self.C.collectorM)
         self.shooter   = Shooter(self.C.shooterM, self.C.ballServos)
         self.climb     = Climber(self.C.climbM)
-        self.sonic     = Sonic(self.C.sonicS)
         self.ledStrip  = LedStrip(self.C.ledStrip)
-
-        self.guide    = Guiding(self.sd, self.sonic, self.drive)
+        self.gearSol   = GearSol(self.C.gearSol)
 
     def operatorControl(self):
         self.C.driveTrain.setSafetyEnabled(True) # keeps robot from going crazy if connection with DS is lost
@@ -47,19 +38,13 @@ class MyRobot(wpilib.SampleRobot):
 
             # Components
             self.gearSol.run(self.C.middleJ.getRawButton(1))
-            self.collector.run(self.C.rightJ.getRawButton(4))
+            self.collector.run(self.C.rightJ.getRawButton(4), self.C.rightJ.getRawButton(5))
             self.shooter.run(self.C.rightJ.getRawButton(2), self.C.rightJ.getRawButton(3))
             self.climb.run(self.C.rightJ.getRawButton(1))
 
-            if (self.C.allienceS.get() == True):
-                self.ledStrip.run({'r': True, 'g': False, 'b': False})
-            else:
-                self.ledStrip.run({'r': False, 'g': False, 'b': True})
+            self.ledStrip.run(self.C.allienceS.get(), self.C.middleJ.getRawButton(1), wpilib.Timer.getMatchTime())
 
             wpilib.Timer.delay(0.002) # wait for a motor update time
-
-    def autonomous(self):
-        """This function is called periodically during autonomous."""
 
     def test(self):
         """This function is called periodically during test mode."""
