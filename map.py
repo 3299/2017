@@ -9,15 +9,16 @@ class Map(object):
         self.middleJ     = 1
         self.rightJ      = 2
 
-        # Motors have suffix 'M'. All motors use PWM.
-        self.frontLeftM  = 3
+        # Motors have suffix 'M'. All motors us e PWM.
+        self.frontLeftM  = 0
         self.frontRightM = 1
-        self.backLeftM   = 6
-        self.backRightM  = 0
+        self.backLeftM   = 2
+        self.backRightM  = 3
+
+        self.climbM      = 4
 
         self.collectorM  = 5
-        self.shooterM    = 2
-        self.climbM      = 4
+        self.shooterM    = 6
 
         self.servo1      = 7
         self.servo2      = 8

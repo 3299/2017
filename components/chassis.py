@@ -30,18 +30,25 @@ class Chassis(object):
                 rotate = rotate * -1
             else:
                 rotate = rotate**2
+                
             powerY = helpers.curve(powerY)
             powerX = helpers.curve(powerX)
-
-        # deadband on rotate
-        if (rotate < 0.75 and rotate > -0.75):
-            rotate = 0
+        else:
+            # deadband on rotate 20% only when not squarring inputs
+            if (rotate < 0.2 and rotate > -0.2):
+                rotate = 0
+            if (powerX < 0.2 and powerX > -0.2):
+                powerX = 0
 
         if (reverse == True):
             powerY = - powerY
             powerX = - powerX
+            
+        # snap the outputs to a standard angle
+        #direction = helpers.snap(8, powerX, powerY)
+        #self.drive.mecanumDrive_Polar((powerX + powerY) / 2, direction, rotate)
 
-        self.drive.mecanumDrive_Cartesian(powerX, powerY, rotate * 0, 0)
+        self.drive.mecanumDrive_Cartesian(powerX, powerY, rotate * 0.75, 0)
 
     def arcadeDrive(self, x, y):
         self.drive.arcadeDrive(x, y)

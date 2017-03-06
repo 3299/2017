@@ -71,5 +71,7 @@ def snap(divisions, x, y):
 Maps a value onto a sin curve. Made for
 the driving fuctions.
 '''
+
 def curve(value):
-    return math.sin(raiseKeepSign(value, 2)) * math.pi/2.6
+    return math.sin(value ** 2) * math.pi/2.6
+    
