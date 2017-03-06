@@ -39,6 +39,20 @@ def remap( x, oMin, oMax, nMin, nMax ): # thanks stackoverflow.com/a/15537393
     return result
 
 '''
+Given a value and power, this raises the value
+to the power, then negates it if the value was
+originally negative.
+'''
+
+def raiseKeepSign(value, power):
+    newValue = value ** power
+
+    if (value < 0 and newValue > 0):
+        return newValue * -1
+    else:
+        return value ** power
+
+'''
 Given a Cartesian x,y position, this 'snaps'
 it to the nearest angle, in degrees (the
 number of snappable angles is determined by
@@ -58,4 +72,4 @@ Maps a value onto a sin curve. Made for
 the driving fuctions.
 '''
 def curve(value):
-    return math.sin(value ** 2) * math.pi/2.6
+    return math.sin(raiseKeepSign(value, 2)) * math.pi/2.6
