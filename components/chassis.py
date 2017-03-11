@@ -10,11 +10,12 @@ class Chassis(object):
         self.jDeadband = 0.05
 
     def run(self, leftX, leftY, rightX, rightY, squared, reverse):
+        print(self.gyro.getAngle())
         powerY = (leftY + rightY) / 2 # average of Y axis for going forward/backward
         powerX = (leftX + rightX) / 2 # average of X axis for strafing
         rotate = (leftY - rightY) / -2
 
-        if (squared == False):
+        if (squared == True):
             if (powerY < 0):
                 powerY = powerY**2
                 powerY = powerY * -1
@@ -30,7 +31,7 @@ class Chassis(object):
                 rotate = rotate * -1
             else:
                 rotate = rotate**2
-                
+
             powerY = helpers.curve(powerY)
             powerX = helpers.curve(powerX)
         else:
@@ -43,7 +44,7 @@ class Chassis(object):
         if (reverse == True):
             powerY = - powerY
             powerX = - powerX
-            
+
         # snap the outputs to a standard angle
         #direction = helpers.snap(8, powerX, powerY)
         #self.drive.mecanumDrive_Polar((powerX + powerY) / 2, direction, rotate)
