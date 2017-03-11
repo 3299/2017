@@ -8,7 +8,6 @@ from inits import Component
 import helpers
 
 from components.chassis import Chassis
-from components.sonic import Sonic
 from components.gear import GearSol
 from components.collector import BallCollector
 from components.climber import Climber
@@ -21,7 +20,7 @@ class MyRobot(wpilib.SampleRobot):
         self.C = Component() # Components inits all connected motors, sensors, and joysticks. See components.py.
 
         # Setup subsystems
-        self.drive     = Chassis(self.C.driveTrain, self.C.gyroS)
+        self.drive     = Chassis(self.C.driveTrain, self.C.encoders, self.C.gyroS)
         self.collector = BallCollector(self.C.collectorM)
         self.shooter   = Shooter(self.C.shooterM, self.C.ballServos)
         self.climb     = Climber(self.C.climbM)
@@ -29,7 +28,7 @@ class MyRobot(wpilib.SampleRobot):
         self.gearSol   = GearSol(self.C.gearSol)
 
     def operatorControl(self):
-        self.C.driveTrain.setSafetyEnabled(True) # keeps robot from going crazy if connection with DS is lost
+        #self.C.driveTrain.setSafetyEnabled(True) # keeps robot from going crazy if connection with DS is lost
 
         # runs when robot is enabled
         while self.isOperatorControl() and self.isEnabled():

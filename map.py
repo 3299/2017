@@ -28,10 +28,12 @@ class Map(object):
 
         # Sensors have suffix 'S'. Gyro and sonar use analog in, everything else uses the DIO.
         self.gyroS       = 0
-        self.sonicS      = {'left': 1, 'right': 2} # pin 4 on both sensors is also connected to the same DIO pin
-        self.allienceS   = 0
+        self.allienceS   = 8
+
+        # Encoders
+        self.encoders    = {'frontLeft': [4, 5], 'frontRight': [2, 3], 'backLeft': [0, 1], 'backRight': [6, 7]}
 
         # LED strip
-        self.ledStrip    = {'r': 7, 'g': 8, 'b': 9}
+        self.ledStrip    = {'r': 10, 'g': 11, 'b': 9}
 
         pass

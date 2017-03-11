@@ -71,7 +71,14 @@ def snap(divisions, x, y):
 Maps a value onto a sin curve. Made for
 the driving fuctions.
 '''
-
 def curve(value):
     return math.sin(value ** 2) * math.pi/2.6
-    
+
+'''
+Rotates a vector in Caresian space.
+'''
+def rotateVector(x, y, angle):
+        angle = math.radians(angle)
+        cosA = math.cos(angle)
+        sinA = math.sin(angle)
+        return (x * cosA - y * sinA), (x * sinA + y * cosA)
