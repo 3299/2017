@@ -50,5 +50,8 @@ class Component(object):
 
         self.encoders['frontLeft'].pidSource = 1
 
+        # Init Relay
+        self.bumpPopR   = wpilib.DigitalOutput(Mapping.bumpPopR)
+
         # Init LED strip
         self.ledStrip   = {'r': wpilib.DigitalOutput(Mapping.ledStrip['r']), 'g': wpilib.DigitalOutput(Mapping.ledStrip['g']), 'b': wpilib.DigitalOutput(Mapping.ledStrip['b'])}

@@ -21,17 +21,20 @@ class Map(object):
         self.shooterM    = 6
 
         self.servo1      = 7
-        self.servo2      = 8
+        self.servo2      = 15
 
         # Soleniods
         self.gearSol     = {'in': 2, 'out': 0}
 
         # Sensors have suffix 'S'. Gyro and sonar use analog in, everything else uses the DIO.
         self.gyroS       = 0
-        self.allienceS   = 8
+        self.allienceS   = 16
 
         # Encoders
         self.encoders    = {'frontLeft': [4, 5], 'frontRight': [2, 3], 'backLeft': [0, 1], 'backRight': [6, 7]}
+
+        # Relay
+        self.bumpPopR    = 8
 
         # LED strip
         self.ledStrip    = {'r': 10, 'g': 11, 'b': 9}
