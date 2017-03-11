@@ -35,7 +35,7 @@ class MyRobot(wpilib.SampleRobot):
         # runs when robot is enabled
         while self.isOperatorControl() and self.isEnabled():
             # Drive
-            self.drive.run(self.C.leftJ.getX(), self.C.leftJ.getY(), self.C.middleJ.getX(), self.C.middleJ.getY(), self.C.leftJ.getRawButton(2), self.C.middleJ.getRawButton(2))
+            self.drive.run(self.C.leftJ.getX(), self.C.leftJ.getY(), self.C.middleJ.getX(), self.C.middleJ.getY(), self.C.leftJ.getRawButton(2), self.C.middleJ.getRawButton(2), 'bobcat')
 
             # Components
             self.gearSol.run(self.C.middleJ.getRawButton(1))

@@ -3,6 +3,7 @@ Drives. Can accept input from joysticks or values [-1, 1]. Uses the gyro for bet
 """
 import helpers
 import wpilib
+import math
 
 from networktables import NetworkTable
 
@@ -40,12 +41,15 @@ class Chassis(object):
         self.encoders['backLeftR'] =   encoderRemaped(self.encoders['backLeft'], True)
         self.encoders['backRightR'] =  encoderRemaped(self.encoders['backRight'], False)
 
+        # PID values
         self.pids      = {'p': 0.8, 'i': 0.6, 'd': 0.02}
 
+        # Tune PID on Smart Dashboard
         self.sd.putNumber('p', self.pids['p'])
         self.sd.putNumber('i', self.pids['i'])
         self.sd.putNumber('d', self.pids['d'])
 
+        # Init PID loops
         self.pidLoops  = {'frontLeft': wpilib.PIDController(self.pids['p'], self.pids['i'], self.pids['d'], self.encoders['frontLeftR'], self.drive['frontLeft']),
                           'backLeft': wpilib.PIDController(self.pids['p'], self.pids['i'], self.pids['d'], self.encoders['backLeftR'], self.drive['backLeft']),
                           'frontRight': wpilib.PIDController(self.pids['p'], self.pids['i'], self.pids['d'], self.encoders['frontRightR'], self.drive['frontRight']),
@@ -60,45 +64,36 @@ class Chassis(object):
         self.pidLoops['backLeft'].setContinuous(True)
         self.pidLoops['backRight'].setContinuous(True)
 
-    def run(self, leftX, leftY, rightX, rightY, squared, reverse):
-        powerY = (leftY + rightY) / 2 # average of Y axis for going forward/backward
-        powerX = (leftX + rightX) / 2 # average of X axis for strafing
-        rotate = (leftY - rightY) / -2
-
-        if (squared == True):
-            if (powerY < 0):
-                powerY = powerY**2
-                powerY = powerY * -1
+    def run(self, leftX, leftY, rightX, rightY, squared, reverse, drivingMethod):
+        if (drivingMethod == 'bobcat'):
+            if (reverse == True):
+                multiplier = -1
             else:
-                powerY = powerY**2
-            if (powerX < 0):
-                powerX = powerX**2
-                powerX = powerX * -1
+                multiplier = 1
+
+            if (squared == True):
+                self.bobcat(
+                    helpers.raiseKeepSign(leftX, 2) * multiplier,
+                    helpers.raiseKeepSign(leftY, 2) * multiplier,
+                    helpers.raiseKeepSign(rightX, 2) * multiplier,
+                    helpers.raiseKeepSign(rightY, 2) * multiplier)
             else:
-                powerX = powerX**2
-            if (rotate < 0):
-                rotate = rotate**2
-                rotate = rotate * -1
-            else:
-                rotate = rotate**2
+                self.bobcat(leftX * multiplier, leftY * multiplier, rightX * multiplier, rightY * multiplier)
 
-            powerY = helpers.curve(powerY)
-            powerX = helpers.curve(powerX)
-        else:
-            # deadband on rotate 20% only when not squarring inputs
-            if (rotate < 0.2 and rotate > -0.2):
-                rotate = 0
-            if (powerX < 0.2 and powerX > -0.2):
-                powerX = 0
+        elif (drivingMethod == 'arcade'):
+            self.arcade(leftX, leftY, rightX, rightY)
 
-        if (reverse == True):
-            powerY = - powerY
-            powerX = - powerX
+    def bobcat(self, x1, y1, x2, y2):
+        powerY = (y1 + y2) / 2 # average of Y axis for going forward/backward
+        powerX = (x1 + x2) / 2 # average of X axis for strafing
+        rotate = (y1 - y2) / 2
 
-        self.cartesian(-powerX, powerY, -rotate * 0.75)
+        self.cartesian(powerX, powerY, rotate * 0.75)
 
-    def set(self, power, direction, rotation):
-        self.drive.mecanumDrive_Polar(power, direction, rotation)
+    def arcade(self, x1, y1, x2, y2):
+        direction = math.degrees(math.atan2(x2, -y2))
+
+        self.polar(abs(y1), direction, x1)
 
     def cartesian(self, x, y, rotation):
         p = self.sd.getNumber('p')
@@ -118,3 +113,26 @@ class Chassis(object):
         self.pidLoops['frontRight'].setSetpoint(frontRight)
         self.pidLoops['backLeft'].setSetpoint(backLeft)
         self.pidLoops['backRight'].setSetpoint(backRight)
+
+    def polar(self, power, direction, rotation):
+        power = power * math.sqrt(2.0)
+        # The rollers are at 45 degree angles.
+        dirInRad = math.radians(direction + 45.0)
+        cosD = math.cos(dirInRad)
+        sinD = math.sin(dirInRad)
+
+        speeds['frontLeft']  = sinD * power + rotation
+        speeds['frontRight'] = cosD * power - rotation
+        speeds['backLeft']   = cosD * power + rotation
+        speeds['backRight']  = sinD * power - rotation
+
+        # Normalize values - make sure they are all -1 < x < 1
+        maxMagnitude = max(abs(x) for x in speeds)
+        if maxMagnitude > 1.0:
+            for i in range(len(speeds)):
+                speeds[i] = speeds[i] / maxMagnitude
+
+        self.pidLoops['frontLeft'].setSetpoint(speeds['frontLeft'])
+        self.pidLoops['frontRight'].setSetpoint(speeds['frontRight'])
+        self.pidLoops['backLeft'].setSetpoint(speeds['backLeft'])
+        self.pidLoops['backRight'].setSetpoint(speeds['backRight'])
