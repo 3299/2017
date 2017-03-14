@@ -12,9 +12,7 @@ class Component(object):
 
         # Init drivetrain
         self.driveTrain = {'frontLeft': wpilib.Spark(Mapping.frontLeftM), 'backLeft': wpilib.Spark(Mapping.backLeftM), 'frontRight': wpilib.Spark(Mapping.frontRightM), 'backRight': wpilib.Spark(Mapping.backRightM)}
-        #self.driveTrain.setInvertedMotor(1, True)
         self.driveTrain['frontLeft'].setInverted(True)
-        #self.driveTrain.setInvertedMotor(3, True)
         self.driveTrain['backLeft'].setInverted(True)
 
         # Init other motors

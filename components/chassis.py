@@ -72,8 +72,6 @@ class Chassis(object):
               'Back right: ', round(self.encoders['backRight'].getRate(), 0))
         '''
 
-        #self.cartesian(0.5*(microRight - microLeft), 0.5*(microBackward - microTop), 0)
-
         if (drivingMethod == 'bobcat'):
             if (reverse == True):
                 multiplier = -1

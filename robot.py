@@ -16,7 +16,7 @@ from components.bumpPop import BumpPop
 from components.ledStrip import LedStrip
 from guide import Guiding
 
-class MyRobot(wpilib.SampleRobot):
+class Randy(wpilib.SampleRobot):
     def robotInit(self):
         self.C = Component() # Components inits all connected motors, sensors, and joysticks. See components.py.
 
@@ -30,12 +30,19 @@ class MyRobot(wpilib.SampleRobot):
         self.gearSol   = GearSol(self.C.gearSol)
 
     def operatorControl(self):
-        #self.C.driveTrain.setSafetyEnabled(True) # keeps robot from going crazy if connection with DS is lost
-
         # runs when robot is enabled
         while self.isOperatorControl() and self.isEnabled():
             # Drive
-            self.drive.run(self.C.leftJ.getX(), self.C.leftJ.getY(), self.C.middleJ.getX(), self.C.middleJ.getY(), self.C.leftJ.getRawButton(4), self.C.leftJ.getRawButton(3), self.C.leftJ.getRawButton(5), self.C.leftJ.getRawButton(2), self.C.middleJ.getRawButton(2), 'bobcat')
+            self.drive.run(self.C.leftJ.getX(),
+                           self.C.leftJ.getY(),
+                           self.C.middleJ.getX(),
+                           self.C.middleJ.getY(),
+                           self.C.leftJ.getRawButton(4),
+                           self.C.leftJ.getRawButton(3),
+                           self.C.leftJ.getRawButton(5),
+                           self.C.leftJ.getRawButton(2),
+                           self.C.middleJ.getRawButton(2),
+                           'bobcat')
 
             # Components
             self.gearSol.run(self.C.middleJ.getRawButton(1))
@@ -52,4 +59,4 @@ class MyRobot(wpilib.SampleRobot):
         """This function is called periodically during test mode."""
 
 if __name__ == "__main__":
-    wpilib.run(MyRobot)
+    wpilib.run(Randy)
