@@ -34,7 +34,7 @@ class Map(object):
         self.encoders    = {'frontLeft': [4, 5], 'frontRight': [2, 3], 'backLeft': [0, 1], 'backRight': [6, 7]}
 
         # Relay
-        self.bumpPopR    = 8
+        self.bumpPopR    = 0
 
         # LED strip
         self.ledStrip    = {'r': 10, 'g': 11, 'b': 9}

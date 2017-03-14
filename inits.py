@@ -16,7 +16,6 @@ class Component(object):
         self.driveTrain['frontLeft'].setInverted(True)
         #self.driveTrain.setInvertedMotor(3, True)
         self.driveTrain['backLeft'].setInverted(True)
-        #self.driveTrain.setExpiration(0.1)
 
         # Init other motors
         self.collectorM  = wpilib.Talon(Mapping.collectorM)
@@ -48,10 +47,8 @@ class Component(object):
         self.encoders['backLeft'].setDistancePerPulse(0.073)
         self.encoders['backRight'].setDistancePerPulse(0.073)
 
-        self.encoders['frontLeft'].pidSource = 1
-
         # Init Relay
-        self.bumpPopR   = wpilib.DigitalOutput(Mapping.bumpPopR)
+        self.bumpPopR   = wpilib.Relay(Mapping.bumpPopR)
 
         # Init LED strip
         self.ledStrip   = {'r': wpilib.DigitalOutput(Mapping.ledStrip['r']), 'g': wpilib.DigitalOutput(Mapping.ledStrip['g']), 'b': wpilib.DigitalOutput(Mapping.ledStrip['b'])}
