@@ -18,7 +18,7 @@ from guide import Guiding
 
 class Randy(wpilib.SampleRobot):
     def robotInit(self):
-        self.C = Component() # Components inits all connected motors, sensors, and joysticks. See components.py.
+        self.C = Component() # Components inits all connected motors, sensors, and joysticks. See inits.py.
 
         # Setup subsystems
         self.drive     = Chassis(self.C.driveTrain, self.C.encoders, self.C.gyroS)

@@ -1,5 +1,7 @@
 """
-Drives. Can accept input from joysticks or values [-1, 1]. Uses the gyro for better steering.
+Drives. Can accept input from joysticks or values [-1, 1].
+Uses the wheel-attached encoders as input for a threaded PID
+loop on each wheel.
 """
 import helpers
 import wpilib
