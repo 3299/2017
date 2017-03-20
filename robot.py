@@ -2,7 +2,8 @@
 Main logic code
 """
 import wpilib
-from networktables import NetworkTables
+import time
+from networktables import NetworkTable
 
 from inits import Component
 import helpers
@@ -29,9 +30,12 @@ class Randy(wpilib.SampleRobot):
         self.ledStrip  = LedStrip(self.C.ledStrip)
         self.gearSol   = GearSol(self.C.gearSol)
 
+        self.lastTime = 0 # used in Auto
+
     def operatorControl(self):
         # runs when robot is enabled
         while self.isOperatorControl() and self.isEnabled():
+            print(self.C.gyroS.getRate())
             # Drive
             self.drive.run(self.C.leftJ.getX(),
                            self.C.leftJ.getY(),
@@ -42,10 +46,13 @@ class Randy(wpilib.SampleRobot):
                            self.C.leftJ.getRawButton(5),
                            self.C.leftJ.getRawButton(2),
                            self.C.middleJ.getRawButton(2),
-                           'bobcat')
+                           'arcade')
 
             # Components
-            self.gearSol.run(self.C.middleJ.getRawButton(1))
+            if (self.C.middleJ.getRawButton(1) == True and self.C.middleJ.getRawButton(2) == True):
+                self.gearSol.run(True)
+            else:
+                self.gearSol.run(False)
             self.collector.run(self.C.rightJ.getRawButton(4), self.C.rightJ.getRawButton(5))
             self.shooter.run(self.C.rightJ.getRawButton(2), self.C.rightJ.getRawButton(3))
             self.bumpPop.run(self.C.leftJ.getRawButton(1))
@@ -57,6 +64,21 @@ class Randy(wpilib.SampleRobot):
 
     def test(self):
         """This function is called periodically during test mode."""
+
+    def autonomous(self):
+        """Runs once during autonomous."""
+        self.C.gyroS.reset()
+        self.bumpPop.run(True) # deploy Randy
+        self.lastTime = time.clock()
+        while (time.clock() - self.lastTime < 1.4):
+            self.drive.polar(0.5, 180, 3 * helpers.remap(self.C.gyroS.getRate(), -360, 360, -1, 1)) # drive forward
+
+        self.drive.polar(0, 0, 0)
+        wpilib.Timer.delay(1.5)
+        self.gearSol.run(True)
+        wpilib.Timer.delay(1)
+        self.gearSol.run(False)
+        self.bumpPop.run(False)
 
 if __name__ == "__main__":
     wpilib.run(Randy)
