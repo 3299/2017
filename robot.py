@@ -14,6 +14,7 @@ from components.collector import BallCollector
 from components.climber import Climber
 from components.shooter import Shooter
 from components.bumpPop import BumpPop
+from components.groundGear import GroundGear
 from components.ledStrip import LedStrip
 from guide import Guiding
 
@@ -27,6 +28,7 @@ class Randy(wpilib.SampleRobot):
         self.shooter   = Shooter(self.C.shooterM, self.C.ballServos)
         self.climb     = Climber(self.C.climbM)
         self.bumpPop   = BumpPop(self.C.bumpPopR)
+        self.groundGear= GroundGear(self.C.groundSol, self.C.groundGearR)
         self.ledStrip  = LedStrip(self.C.ledStrip)
         self.gearSol   = GearSol(self.C.gearSol)
 
@@ -56,6 +58,7 @@ class Randy(wpilib.SampleRobot):
             self.collector.run(self.C.rightJ.getRawButton(4), self.C.rightJ.getRawButton(5))
             self.shooter.run(self.C.rightJ.getRawButton(2), self.C.rightJ.getRawButton(3))
             self.bumpPop.run(self.C.leftJ.getRawButton(1))
+            self.groundGear.run(self.C.leftJ.getRawButton(1), self.C.middleJ.getRawButton(4))
             self.climb.run(self.C.rightJ.getRawButton(1))
 
             self.ledStrip.run(self.C.allienceS.get(), self.C.middleJ.getRawButton(1), wpilib.Timer.getMatchTime())

@@ -25,6 +25,7 @@ class Component(object):
 
         # Init soleniods
         self.gearSol    = wpilib.DoubleSolenoid(Mapping.gearSol['out'], Mapping.gearSol['in'])
+        self.groundSol  = wpilib.DoubleSolenoid(Mapping.groundGearSol['out'], Mapping.groundGearSol['in'])
 
         # Init joysticks
         self.leftJ      = wpilib.Joystick(Mapping.leftJ)
@@ -47,6 +48,7 @@ class Component(object):
 
         # Init Relay
         self.bumpPopR   = wpilib.Relay(Mapping.bumpPopR)
+        self.groundGearR= wpilib.Relay(Mapping.groundGearR)
 
         # Init LED strip
         self.ledStrip   = {'r': wpilib.DigitalOutput(Mapping.ledStrip['r']), 'g': wpilib.DigitalOutput(Mapping.ledStrip['g']), 'b': wpilib.DigitalOutput(Mapping.ledStrip['b'])}

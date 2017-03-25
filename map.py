@@ -26,6 +26,7 @@ class Map(object):
 
         # Soleniods
         self.gearSol     = {'in': 2, 'out': 0}
+        self.groundGearSol = {'in': 3, 'out': 4}
 
         # Sensors have suffix 'S'. Gyro uses analog in, everything else uses the DIO.
         self.gyroS       = 0
@@ -34,8 +35,9 @@ class Map(object):
         # Encoders are plugged into the custom passive expansion board for the roboRio's MXP port.
         self.encoders    = {'frontLeft': [4, 5], 'frontRight': [2, 3], 'backLeft': [0, 1], 'backRight': [6, 7]}
 
-        # Relay
+        # Relays
         self.bumpPopR    = 0
+        self.groundGearR = 1
 
         # LED strip (connected to DIO).
         self.ledStrip    = {'r': 10, 'g': 11, 'b': 9}
