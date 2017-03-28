@@ -32,6 +32,10 @@ class Randy(wpilib.SampleRobot):
         self.ledStrip  = LedStrip(self.C.ledStrip)
         self.gearSol   = GearSol(self.C.gearSol)
 
+        # Smart Dashboard
+        self.sd = NetworkTable.getTable('SmartDashboard')
+        self.sd.putBoolean('autoAngle', False)
+
         self.lastTime = 0 # used in Auto
 
     def operatorControl(self):
@@ -70,10 +74,17 @@ class Randy(wpilib.SampleRobot):
 
     def autonomous(self):
         """Runs once during autonomous."""
+        if (self.sd.getBoolean('autoAngle') == True):
+            print('running alternative auto')
+            runTime = 1.6
+        else:
+            print('running main auto')
+            runTime = 1.4
+
         self.C.gyroS.reset()
         self.bumpPop.run(True) # deploy Randy
         self.lastTime = time.clock()
-        while (time.clock() - self.lastTime < 1.4):
+        while (time.clock() - self.lastTime < runTime):
             self.drive.polar(0.5, 180, 3 * helpers.remap(self.C.gyroS.getRate(), -360, 360, -1, 1)) # drive forward
 
         self.drive.polar(0, 0, 0)
