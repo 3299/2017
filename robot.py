@@ -34,7 +34,7 @@ class Randy(wpilib.SampleRobot):
 
         # Smart Dashboard
         self.sd = NetworkTable.getTable('SmartDashboard')
-        self.sd.putBoolean('autoAngle', False)
+        self.sd.putBoolean('autoAngle', True)
 
         self.lastTime = 0 # used in Auto
 
@@ -76,23 +76,41 @@ class Randy(wpilib.SampleRobot):
         """Runs once during autonomous."""
         if (self.sd.getBoolean('autoAngle') == True):
             print('running alternative auto')
-            runTime = 1.6
+            runTime = 1.7
         else:
             print('running main auto')
-            runTime = 1.4
+            runTime = 1.6
 
         self.C.gyroS.reset()
         self.bumpPop.run(True) # deploy Randy
         self.lastTime = time.clock()
         while (time.clock() - self.lastTime < runTime):
-            self.drive.polar(0.5, 180, 3 * helpers.remap(self.C.gyroS.getRate(), -360, 360, -1, 1)) # drive forward
+            self.drive.polar(0.5, 0, 3 * helpers.remap(self.C.gyroS.getRate(), -360, 360, -1, 1)) # drive forward
+
+        if (self.sd.getBoolean('autoAngle') == True):
+            self.C.gyroS.reset()
+            self.drive.cartesian(0, 0, -0.3)
+            wpilib.Timer.delay(1.1)
+            self.drive.cartesian(0, 0.3, 0)
+            wpilib.Timer.delay(1.1)
 
         self.drive.polar(0, 0, 0)
         wpilib.Timer.delay(1.5)
-        self.gearSol.run(True)
+        self.groundGear.run(True, False)
         wpilib.Timer.delay(1)
-        self.gearSol.run(False)
-        self.bumpPop.run(False)
+        self.drive.polar(0.5, 180, 0)
+        wpilib.Timer.delay(0.5)
+        self.groundGear.run(False, False)
+        self.drive.polar(0, 0, 0)
+
+        if (self.sd.getBoolean('autoAngle') == True):
+            self.drive.cartesian(0, -0.5, 0)
+            wpilib.Timer.delay(0.5)
+            self.drive.cartesian(0, 0, 0.3)
+            wpilib.Timer.delay(1.1)
+            self.drive.cartesian(0, 0.7, 0)
+            wpilib.Timer.delay(4)
+
 
 if __name__ == "__main__":
     wpilib.run(Randy)

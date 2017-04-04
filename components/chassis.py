@@ -56,7 +56,7 @@ class Chassis(object):
         if (-0.10 < x2 < 0.10):
             rotation = 0
         else:
-            rotation = helpers.raiseKeepSign(-x2, 2) * 0.5
+            rotation = helpers.raiseKeepSign(-x2, 2) * 0.75
 
         direction = math.degrees(math.atan2(-x1, y1))
 
@@ -74,14 +74,15 @@ class Chassis(object):
         self.polar(power, direction, rotation)
 
     def cartesian(self, x, y, rotation):
-        p = self.sd.getNumber('p')
-        i = self.sd.getNumber('i')
-        d = self.sd.getNumber('d')
-
         frontLeft = -x + y + rotation
         frontRight = x + y - rotation
         backLeft = x + y + rotation
         backRight = -x + y - rotation
+
+        self.drive['frontLeft'].set(frontLeft)
+        self.drive['frontRight'].set(frontRight)
+        self.drive['backLeft'].set(backLeft)
+        self.drive['backRight'].set(backRight)
 
     def polar(self, power, direction, rotation):
         if (power == 'last'):
