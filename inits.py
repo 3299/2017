@@ -19,9 +19,7 @@ class Component(object):
         self.collectorM  = wpilib.Talon(Mapping.collectorM)
         self.shooterM    = wpilib.Talon(Mapping.shooterM)
         self.climbM      = wpilib.Talon(Mapping.climbM)
-
-        # Init servos
-        self.ballServos = {'servo1': wpilib.Servo(Mapping.servo1), 'servo2': wpilib.Servo(Mapping.servo2)}
+        self.groundGearM = wpilib.Talon(Mapping.groundGearM)
 
         # Init soleniods
         self.gearSol    = wpilib.DoubleSolenoid(Mapping.gearSol['out'], Mapping.gearSol['in'])
@@ -35,6 +33,7 @@ class Component(object):
         # Init sensors
         self.gyroS      = wpilib.AnalogGyro(Mapping.gyroS)
         self.allienceS  = wpilib.DigitalInput(Mapping.allienceS)
+        self.accelS     = wpilib.BuiltInAccelerometer()
 
         # Init encoders
         self.encoders   = {'frontLeft':  wpilib.Encoder(Mapping.encoders['frontLeft'][0], Mapping.encoders['frontLeft'][1], True),
@@ -48,7 +47,6 @@ class Component(object):
 
         # Init Relay
         self.bumpPopR   = wpilib.Relay(Mapping.bumpPopR)
-        self.groundGearR= wpilib.Relay(Mapping.groundGearR)
 
         # Init LED strip
         self.ledStrip   = {'r': wpilib.DigitalOutput(Mapping.ledStrip['r']), 'g': wpilib.DigitalOutput(Mapping.ledStrip['g']), 'b': wpilib.DigitalOutput(Mapping.ledStrip['b'])}

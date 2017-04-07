@@ -16,6 +16,6 @@ class GroundGear(object):
             self.sol.set(self.sol.Value.kReverse)
 
         if (rollerTrigger == True):
-            self.rollers.set(wpilib.Relay.Value.kForward)
+            self.rollers.set(1)
         else:
-            self.rollers.set(wpilib.Relay.Value.kOff)
+            self.rollers.set(0)

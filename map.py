@@ -10,26 +10,23 @@ class Map(object):
         self.rightJ      = 2
 
         # Motors have suffix 'M'. All motors use PWM.
-        self.frontLeftM  = 0
+        self.frontLeftM  = 3
         self.frontRightM = 1
-        self.backLeftM   = 2
-        self.backRightM  = 3
+        self.backLeftM   = 7
+        self.backRightM  = 0
 
-        self.climbM      = 4
+        self.climbM      = 2
 
         self.collectorM  = 5
         self.shooterM    = 6
-
-        # Servos are also plugged into the PWM slots.
-        self.servo1      = 7
-        self.servo2      = 15
+        self.groundGearM = 4
 
         # Soleniods
-        self.gearSol     = {'in': 2, 'out': 0}
-        self.groundGearSol = {'in': 3, 'out': 4}
+        self.gearSol     = {'in': 3, 'out': 4}
+        self.groundGearSol = {'in': 2, 'out': 0}
 
         # Sensors have suffix 'S'. Gyro uses analog in, everything else uses the DIO.
-        self.gyroS       = 0
+        self.gyroS       = 1
         self.allienceS   = 16
 
         # Encoders are plugged into the custom passive expansion board for the roboRio's MXP port.
@@ -37,7 +34,6 @@ class Map(object):
 
         # Relays
         self.bumpPopR    = 0
-        self.groundGearR = 1
 
         # LED strip (connected to DIO).
         self.ledStrip    = {'r': 10, 'g': 11, 'b': 9}
