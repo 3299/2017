@@ -10,18 +10,11 @@ import math
 from networktables import NetworkTable
 
 class Chassis(object):
-    def __init__(self, drive, encoders, gyro):
+    def __init__(self, drive, gyro):
         self.drive     = drive
-        self.encoders  = encoders
         self.gyro      = gyro
         self.jDeadband = 0.05
         self.sd = NetworkTable.getTable('SmartDashboard')
-
-        # reset all encoders when code restarts
-        self.encoders['frontLeft'].reset()
-        self.encoders['frontRight'].reset()
-        self.encoders['backLeft'].reset()
-        self.encoders['backRight'].reset()
 
     def run(self, leftX, leftY, rightX, rightY, microLeft, microTop, microRight, microBackward, reverse, drivingMethod):
         if (drivingMethod == 'bobcat'):

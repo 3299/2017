@@ -35,16 +35,6 @@ class Component(object):
         self.allienceS  = wpilib.DigitalInput(Mapping.allienceS)
         self.accelS     = wpilib.BuiltInAccelerometer()
 
-        # Init encoders
-        self.encoders   = {'frontLeft':  wpilib.Encoder(Mapping.encoders['frontLeft'][0], Mapping.encoders['frontLeft'][1], True),
-                           'frontRight': wpilib.Encoder(Mapping.encoders['frontRight'][0], Mapping.encoders['frontRight'][1], True),
-                           'backLeft':   wpilib.Encoder(Mapping.encoders['backLeft'][0], Mapping.encoders['backLeft'][1], True),
-                           'backRight':  wpilib.Encoder(Mapping.encoders['backRight'][0], Mapping.encoders['backRight'][1], True)}
-        self.encoders['frontLeft'].setDistancePerPulse(0.17)
-        self.encoders['frontRight'].setDistancePerPulse(0.17)
-        self.encoders['backLeft'].setDistancePerPulse(0.17)
-        self.encoders['backRight'].setDistancePerPulse(0.17)
-
         # Init Relay
         self.bumpPopR   = wpilib.Relay(Mapping.bumpPopR)
 

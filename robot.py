@@ -22,7 +22,7 @@ class Randy(wpilib.SampleRobot):
         self.C = Component() # Components inits all connected motors, sensors, and joysticks. See inits.py.
 
         # Setup subsystems
-        self.drive     = Chassis(self.C.driveTrain, self.C.encoders, self.C.gyroS)
+        self.drive     = Chassis(self.C.driveTrain, self.C.gyroS)
         self.collector = BallCollector(self.C.collectorM)
         self.climb     = Climber(self.C.climbM)
         self.bumpPop   = BumpPop(self.C.bumpPopR)
@@ -39,7 +39,7 @@ class Randy(wpilib.SampleRobot):
     def operatorControl(self):
         # runs when robot is enabled
         while self.isOperatorControl() and self.isEnabled():
-            print(self.C.accelS.getY())
+
             # Drive
             self.drive.run(self.C.leftJ.getX(),
                            self.C.leftJ.getY(),
@@ -61,8 +61,6 @@ class Randy(wpilib.SampleRobot):
             self.groundGear.run(self.C.leftJ.getRawButton(1), self.C.middleJ.getRawButton(4))
             self.climb.run(self.C.rightJ.getRawButton(1))
 
-            self.ledStrip.run(self.C.allienceS.get(), self.C.middleJ.getRawButton(1), wpilib.Timer.getMatchTime())
-
             wpilib.Timer.delay(0.002) # wait for a motor update time
 
     def test(self):
@@ -71,42 +69,12 @@ class Randy(wpilib.SampleRobot):
 
     def autonomous(self):
         """Runs once during autonomous."""
-        if (self.sd.getBoolean('autoAngle') == True):
-            print('running alternative auto')
-            runTime = 1.8
-        else:
-            print('running main auto')
-            runTime = 1.6
-
-        self.C.gyroS.reset()
         self.bumpPop.run(True) # deploy Randy
-        self.lastTime = time.clock()
-        while (time.clock() - self.lastTime < runTime):
-            print(self.C.gyroS.getRate())
-            self.drive.polar(0.4, 0, helpers.remap(self.C.gyroS.getRate(), -360, 360, -1, 1)) # drive forward
 
-        if (self.sd.getBoolean('autoAngle') == True):
-            self.drive.cartesian(0, 0, -0.35)
-            wpilib.Timer.delay(0.9)
-
-            self.drive.cartesian(0, 0.3, 0)
-            wpilib.Timer.delay(1.1)
-
-        self.drive.polar(0, 0, 0)
-        wpilib.Timer.delay(1.5)
-        self.groundGear.run(True, False)
+        self.drive.polar(0.8, 180, 0) # drive forward
         wpilib.Timer.delay(1)
-        self.drive.polar(0.5, 180, 0)
-        wpilib.Timer.delay(0.5)
-        self.groundGear.run(False, False)
         self.drive.polar(0, 0, 0)
-
-        if (self.sd.getBoolean('autoAngle') == True):
-            self.drive.cartesian(0, -0.5, 0)
-            wpilib.Timer.delay(0.5)
-            self.drive.cartesian(0, 0, 0.3)
-            wpilib.Timer.delay(0.7)
-            self.drive.cartesian(0, 0, 0)
+        wpilib.Timer.delay(5)
 
         self.bumpPop.run(False)
 
