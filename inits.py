@@ -11,7 +11,7 @@ class Component(object):
         Mapping = Map()
 
         # Init drivetrain
-        self.driveTrain = {'frontLeft': wpilib.Spark(Mapping.frontLeftM), 'backLeft': wpilib.Spark(Mapping.backLeftM), 'frontRight': wpilib.Spark(Mapping.frontRightM), 'backRight': wpilib.Spark(Mapping.backRightM)}
+        self.driveTrain = {'frontLeft': wpilib.Jaguar(Mapping.frontLeftM), 'backLeft': wpilib.Jaguar(Mapping.backLeftM), 'frontRight': wpilib.Jaguar(Mapping.frontRightM), 'backRight': wpilib.Jaguar(Mapping.backRightM)}
         self.driveTrain['frontLeft'].setInverted(True)
         self.driveTrain['backLeft'].setInverted(True)
 
@@ -31,7 +31,7 @@ class Component(object):
         self.rightJ     = wpilib.Joystick(Mapping.rightJ)
 
         # Init sensors
-        self.gyroS      = wpilib.AnalogGyro(Mapping.gyroS)
+        self.gyroS      = wpilib.ADXRS450_Gyro(Mapping.gyroS)
         self.allienceS  = wpilib.DigitalInput(Mapping.allienceS)
         self.accelS     = wpilib.BuiltInAccelerometer()
 

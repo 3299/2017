@@ -25,8 +25,8 @@ class Map(object):
         self.gearSol     = {'in': 3, 'out': 4}
         self.groundGearSol = {'in': 2, 'out': 0}
 
-        # Sensors have suffix 'S'. Gyro uses analog in, everything else uses the DIO.
-        self.gyroS       = 1
+        # Sensors have suffix 'S'. Gyro uses SPI, everything else uses the DIO.
+        self.gyroS       = 0
         self.allienceS   = 0
 
         # Relays

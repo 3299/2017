@@ -11,12 +11,23 @@ from networktables import NetworkTable
 
 class Chassis(object):
     def __init__(self, drive, gyro):
-        self.drive     = drive
-        self.gyro      = gyro
-        self.jDeadband = 0.05
-        self.sd = NetworkTable.getTable('SmartDashboard')
+        self.drive          = drive
+        self.gyro           = gyro
+        self.jDeadband      = 0.05
+        self.pidAngle       = wpilib.PIDController(0.015, 0, 0.02, self.anglePIDInput, output=self.anglePIDOutput)
 
-    def run(self, leftX, leftY, rightX, rightY, microLeft, microTop, microRight, microBackward, reverse, drivingMethod):
+        self.pidAngle.setInputRange(-180.0, 180.0)
+        self.pidAngle.setOutputRange(-1.0, 1.0)
+        self.pidAngle.setAbsoluteTolerance(1)
+        self.pidAngle.setContinuous(False)
+        self.pidRotateRate = 0
+
+        self.sd = NetworkTable.getTable('SmartDashboard')
+        self.sd.putNumber('p', 0.015)
+        self.sd.putNumber('i', 0.0)
+        self.sd.putNumber('d', 0.02)
+
+    def run(self, leftX, leftY, rightX, microLeft, microTop, microRight, microBackward, reverse, drivingMethod):
         if (drivingMethod == 'bobcat'):
             if (reverse == True):
                 multiplier = -1
@@ -32,7 +43,7 @@ class Chassis(object):
         elif (drivingMethod == 'arcade'):
             self.arcade(helpers.raiseKeepSign(leftX, 2) + 0.4*(microRight - microLeft),
                         helpers.raiseKeepSign(leftY, 2) + 0.4*(microBackward - microTop),
-                        rightX, rightY)
+                        rightX)
 
     def bobcat(self, x1, y1, x2, y2):
         powerY = (y1 + y2) / 2 # average of Y axis for going forward/backward
@@ -44,7 +55,7 @@ class Chassis(object):
 
         self.cartesian(powerX, powerY, rotate * 0.75)
 
-    def arcade(self, x1, y1, x2, y2):
+    def arcade(self, x1, y1, x2):
         # rotation deadzone
         if (-0.10 < x2 < 0.10):
             rotation = 0
@@ -67,32 +78,19 @@ class Chassis(object):
         self.polar(power, direction, rotation)
 
     def cartesian(self, x, y, rotation):
-        frontLeft = -x + y + rotation
-        frontRight = x + y - rotation
-        backLeft = x + y + rotation
-        backRight = -x + y - rotation
+        speeds = [0] * 4
 
-        self.drive['frontLeft'].set(frontLeft)
-        self.drive['frontRight'].set(frontRight)
-        self.drive['backLeft'].set(backLeft)
-        self.drive['backRight'].set(backRight)
+        speeds[0] = -x + y + rotation
+        speeds[1] = x + y - rotation
+        speeds[2] = x + y + rotation
+        speeds[3] = -x + y - rotation
+
+        self.drive['frontLeft'].set(speeds[0])
+        self.drive['frontRight'].set(speeds[1])
+        self.drive['backLeft'].set(speeds[2])
+        self.drive['backRight'].set(speeds[3])
 
     def polar(self, power, direction, rotation):
-        if (power == 'last'):
-            power = self.lastPower
-        else:
-            self.lastPower = power
-
-        if (direction == 'last'):
-            direction = self.lastDirection
-        else:
-            self.lastDirection = direction
-
-        if (rotation == 'last'):
-            rotation = self.lastRotation
-        else:
-            self.lastRotation = rotation
-
         power = power * math.sqrt(2.0)
         # The rollers are at 45 degree angles.
         dirInRad = math.radians(direction + 45)
@@ -109,6 +107,23 @@ class Chassis(object):
         self.drive['frontRight'].set(speeds[1])
         self.drive['backLeft'].set(speeds[2])
         self.drive['backRight'].set(speeds[3])
+
+    def driveToAngle(self, power, angle, continuous):
+        self.pidAngle.setPID(self.sd.getNumber('p'), self.sd.getNumber('i'), self.sd.getNumber('d'))
+        self.pidAngle.setSetpoint(angle)
+        self.pidAngle.enable()
+        self.pidAngle.setContinuous(continuous)
+
+        if (continuous == True):
+            self.cartesian(0, -power, -self.pidRotateRate)
+        else:
+            self.cartesian(0, 0, -self.pidRotateRate)
+
+    def anglePIDInput(self):
+        return helpers.normalizeAngle(self.gyro.getAngle())
+
+    def anglePIDOutput(self, value):
+        self.pidRotateRate = value
 
     def speedsToDirection(self, frontLeft, frontRight, backLeft, backRight):
     	x = (backLeft - frontLeft) / 2

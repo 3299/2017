@@ -15,10 +15,14 @@ from components.climber import Climber
 from components.bumpPop import BumpPop
 from components.groundGear import GroundGear
 from components.ledStrip import LedStrip
-from guide import Guiding
+
+from components.vision import Vision
 
 class Randy(wpilib.SampleRobot):
     def robotInit(self):
+        # init cameras
+        wpilib.CameraServer.launch('cameras.py:main')
+
         self.C = Component() # Components inits all connected motors, sensors, and joysticks. See inits.py.
 
         # Setup subsystems
@@ -29,6 +33,7 @@ class Randy(wpilib.SampleRobot):
         self.groundGear= GroundGear(self.C.groundSol, self.C.groundGearM)
         self.ledStrip  = LedStrip(self.C.ledStrip)
         self.gearSol   = GearSol(self.C.gearSol)
+        self.vision    = Vision(self.drive)
 
         # Smart Dashboard
         self.sd = NetworkTable.getTable('SmartDashboard')
@@ -40,32 +45,36 @@ class Randy(wpilib.SampleRobot):
         # runs when robot is enabled
         while self.isOperatorControl() and self.isEnabled():
 
-            # Drive
-            self.drive.run(self.C.leftJ.getX(),
-                           self.C.leftJ.getY(),
-                           self.C.middleJ.getX(),
-                           self.C.middleJ.getY(),
-                           self.C.leftJ.getRawButton(4),
-                           self.C.leftJ.getRawButton(3),
-                           self.C.leftJ.getRawButton(5),
-                           self.C.leftJ.getRawButton(2),
-                           self.C.middleJ.getRawButton(2),
-                           'arcade')
+            if (self.C.middleJ.getRawButton(8) == True):
+                self.drive.driveToAngle(0.5, 60, continuous=False)
+                #self.vision.alignToPeg()
 
-            # Components
-            if (self.C.middleJ.getRawButton(1) == True and self.C.middleJ.getRawButton(2) == True):
-                self.gearSol.run(True)
             else:
-                self.gearSol.run(False)
-            self.collector.run(self.C.rightJ.getRawButton(4), self.C.rightJ.getRawButton(5))
-            self.groundGear.run(self.C.leftJ.getRawButton(1), self.C.middleJ.getRawButton(4))
-            self.climb.run(self.C.rightJ.getRawButton(1))
+                self.C.gyroS.reset()
+                # Drive
+                self.drive.run(self.C.leftJ.getX(),
+                               self.C.leftJ.getY(),
+                               self.C.middleJ.getX(),
+                               self.C.leftJ.getRawButton(4),
+                               self.C.leftJ.getRawButton(3),
+                               self.C.leftJ.getRawButton(5),
+                               self.C.leftJ.getRawButton(2),
+                               self.C.middleJ.getRawButton(2),
+                               'arcade')
+
+                # Components
+                if (self.C.middleJ.getRawButton(1) == True and self.C.middleJ.getRawButton(2) == True):
+                    self.gearSol.run(True)
+                else:
+                    self.gearSol.run(False)
+                self.collector.run(self.C.rightJ.getRawButton(4), self.C.rightJ.getRawButton(5))
+                self.groundGear.run(self.C.leftJ.getRawButton(1), self.C.middleJ.getRawButton(4))
+                self.climb.run(self.C.rightJ.getRawButton(1))
 
             wpilib.Timer.delay(0.002) # wait for a motor update time
 
     def test(self):
         """This function is called periodically during test mode."""
-        print(self.C.gyroS.getRate())
 
     def autonomous(self):
         """Runs once during autonomous."""
