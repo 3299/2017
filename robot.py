@@ -10,13 +10,13 @@ import helpers
 
 from components.chassis import Chassis
 from components.gear import GearSol
-from components.collector import BallCollector
 from components.climber import Climber
 from components.bumpPop import BumpPop
 from components.groundGear import GroundGear
 from components.ledStrip import LedStrip
 
 from components.vision import Vision
+from autonomous import Autonomous
 
 class Randy(wpilib.SampleRobot):
     def robotInit(self):
@@ -26,20 +26,19 @@ class Randy(wpilib.SampleRobot):
         self.C = Component() # Components inits all connected motors, sensors, and joysticks. See inits.py.
 
         # Setup subsystems
-        self.drive     = Chassis(self.C.driveTrain, self.C.gyroS)
-        self.collector = BallCollector(self.C.collectorM)
-        self.climb     = Climber(self.C.climbM)
-        self.bumpPop   = BumpPop(self.C.bumpPopR)
-        self.groundGear= GroundGear(self.C.groundSol, self.C.groundGearM)
-        self.ledStrip  = LedStrip(self.C.ledStrip)
-        self.gearSol   = GearSol(self.C.gearSol)
-        self.vision    = Vision(self.drive)
+        self.drive             = Chassis(self.C.driveTrain, self.C.gyroS)
+        self.climb             = Climber(self.C.climbM)
+        self.bumpPop           = BumpPop(self.C.bumpPopR)
+        self.groundGear        = GroundGear(self.C.groundSol, self.C.groundGearM)
+        self.ledStrip          = LedStrip(self.C.ledStrip)
+        self.gearSol           = GearSol(self.C.gearSol)
+        self.vision            = Vision(self.drive)
+        self.autonomousRoutine = Autonomous(self.drive, self.bumpPop, self.gearSol, self.groundGear, self.vision)
 
         # Smart Dashboard
         self.sd = NetworkTable.getTable('SmartDashboard')
         self.sd.putBoolean('autoAngle', True)
-
-        self.lastTime = 0 # used in Auto
+        self.sd.putBoolean('isLeft', True)
 
     def operatorControl(self):
         # runs when robot is enabled
@@ -58,16 +57,13 @@ class Randy(wpilib.SampleRobot):
                                self.C.leftJ.getRawButton(4),
                                self.C.leftJ.getRawButton(3),
                                self.C.leftJ.getRawButton(5),
-                               self.C.leftJ.getRawButton(2),
-                               self.C.middleJ.getRawButton(2),
-                               'arcade')
+                               self.C.leftJ.getRawButton(2))
 
                 # Components
                 if (self.C.middleJ.getRawButton(1) == True and self.C.middleJ.getRawButton(2) == True):
                     self.gearSol.run(True)
                 else:
                     self.gearSol.run(False)
-                self.collector.run(self.C.rightJ.getRawButton(4), self.C.rightJ.getRawButton(5))
                 self.groundGear.run(self.C.leftJ.getRawButton(1), self.C.middleJ.getRawButton(4))
                 self.climb.run(self.C.rightJ.getRawButton(1))
 
@@ -78,15 +74,7 @@ class Randy(wpilib.SampleRobot):
 
     def autonomous(self):
         """Runs once during autonomous."""
-        self.bumpPop.run(True) # deploy Randy
-
-        self.drive.polar(0.8, 180, 0) # drive forward
-        wpilib.Timer.delay(1)
-        self.drive.polar(0, 0, 0)
-        wpilib.Timer.delay(5)
-
-        self.bumpPop.run(False)
-
+        self.autonomousRoutine.run() # see autonomous.py
 
 if __name__ == "__main__":
     wpilib.run(Randy)

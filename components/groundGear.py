@@ -17,5 +17,7 @@ class GroundGear(object):
 
         if (rollerTrigger == True):
             self.rollers.set(1)
+        elif (rollerTrigger == 'out'):
+            self.rollers.set(-1)
         else:
             self.rollers.set(0)

@@ -27,33 +27,10 @@ class Chassis(object):
         self.sd.putNumber('i', 0.0)
         self.sd.putNumber('d', 0.02)
 
-    def run(self, leftX, leftY, rightX, microLeft, microTop, microRight, microBackward, reverse, drivingMethod):
-        if (drivingMethod == 'bobcat'):
-            if (reverse == True):
-                multiplier = -1
-            else:
-                multiplier = 1
-
-                self.bobcat(
-                    helpers.raiseKeepSign(leftX, 2) * multiplier + 0.5*(microRight - microLeft),
-                    helpers.raiseKeepSign(leftY, 2) * multiplier + 0.5*(microBackward - microTop),
-                    helpers.raiseKeepSign(rightX, 2) * multiplier + 0.5*(microRight - microLeft),
-                    helpers.raiseKeepSign(rightY, 2) * multiplier + 0.5*(microBackward - microTop))
-
-        elif (drivingMethod == 'arcade'):
-            self.arcade(helpers.raiseKeepSign(leftX, 2) + 0.4*(microRight - microLeft),
-                        helpers.raiseKeepSign(leftY, 2) + 0.4*(microBackward - microTop),
-                        rightX)
-
-    def bobcat(self, x1, y1, x2, y2):
-        powerY = (y1 + y2) / 2 # average of Y axis for going forward/backward
-        powerX = (x1 + x2) / 2 # average of X axis for strafing
-        rotate = (y1 - y2) / 2
-
-        if (-0.4 < rotate < 0.4):
-            rotate = 0
-
-        self.cartesian(powerX, powerY, rotate * 0.75)
+    def run(self, leftX, leftY, rightX, microLeft, microTop, microRight, microBackward):
+        self.arcade(helpers.raiseKeepSign(leftX, 2) + 0.4*(microRight - microLeft),
+                    helpers.raiseKeepSign(leftY, 2) + 0.4*(microBackward - microTop),
+                    rightX)
 
     def arcade(self, x1, y1, x2):
         # rotation deadzone
@@ -114,7 +91,7 @@ class Chassis(object):
         self.pidAngle.enable()
         self.pidAngle.setContinuous(continuous)
 
-        if (continuous == True):
+        if (continuous == True): # if true, runs continuously (for driving straight)
             self.cartesian(0, -power, -self.pidRotateRate)
         else:
             self.cartesian(0, 0, -self.pidRotateRate)
