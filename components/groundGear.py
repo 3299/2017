@@ -15,7 +15,7 @@ class GroundGear(object):
         else:
             self.sol.set(self.sol.Value.kReverse)
 
-        if (rollerTrigger == True):
+        if (rollerTrigger == 'in'):
             self.rollers.set(1)
         elif (rollerTrigger == 'out'):
             self.rollers.set(-1)

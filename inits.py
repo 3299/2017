@@ -25,10 +25,8 @@ class Component(object):
         self.gearSol    = wpilib.DoubleSolenoid(Mapping.gearSol['out'], Mapping.gearSol['in'])
         self.groundSol  = wpilib.DoubleSolenoid(Mapping.groundGearSol['out'], Mapping.groundGearSol['in'])
 
-        # Init joysticks
-        self.leftJ      = wpilib.Joystick(Mapping.leftJ)
-        self.middleJ    = wpilib.Joystick(Mapping.middleJ)
-        self.rightJ     = wpilib.Joystick(Mapping.rightJ)
+        # Init joystick
+        self.joystick   = wpilib.XboxController(0)
 
         # Init sensors
         self.gyroS      = wpilib.ADXRS450_Gyro(Mapping.gyroS)

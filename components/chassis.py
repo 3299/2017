@@ -33,26 +33,9 @@ class Chassis(object):
                     rightX)
 
     def arcade(self, x1, y1, x2):
-        # rotation deadzone
-        if (-0.10 < x2 < 0.10):
-            rotation = 0
-        else:
-            rotation = helpers.raiseKeepSign(-x2, 2) * 0.75
-
-        direction = math.degrees(math.atan2(-x1, y1))
-
-        # deadzone on power
-        if (-0.1 < (abs(x1) + abs(y1))/2 < 0.1):
-            power = 0
-        else:
-            if (abs(x1) > abs(y1)):
-                power = abs(x1)
-            elif (abs(x1) < abs(y1)):
-                power = abs(y1)
-            else:
-                power = 1
-
-        self.polar(power, direction, rotation)
+        # rotation curve
+        rotation = helpers.raiseKeepSign(-x2, 2) * 0.75
+        self.cartesian(x1, y1, rotation)
 
     def cartesian(self, x, y, rotation):
         speeds = [0] * 4

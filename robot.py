@@ -43,29 +43,28 @@ class Randy(wpilib.SampleRobot):
     def operatorControl(self):
         # runs when robot is enabled
         while self.isOperatorControl() and self.isEnabled():
+            '''
+            Components
+            '''
+            # Drive
+            self.drive.arcade(self.C.joystick.getRawAxis(0), self.C.joystick.getRawAxis(1), self.C.joystick.getRawAxis(2))
 
-            if (self.C.middleJ.getRawButton(8) == True):
-                self.drive.driveToAngle(0.5, 60, continuous=False)
-                #self.vision.alignToPeg()
-
+            # Back gear
+            if (self.C.joystick.getBumper(wpilib.GenericHID.Hand.kLeft)):
+                self.groundGear.run(True, 'out')
+            elif (self.C.joystick.getTriggerAxis(wpilib.GenericHID.Hand.kLeft) > 0.5):
+                self.groundGear.run(True, 'in')
             else:
-                self.C.gyroS.reset()
-                # Drive
-                self.drive.run(self.C.leftJ.getX(),
-                               self.C.leftJ.getY(),
-                               self.C.middleJ.getX(),
-                               self.C.leftJ.getRawButton(4),
-                               self.C.leftJ.getRawButton(3),
-                               self.C.leftJ.getRawButton(5),
-                               self.C.leftJ.getRawButton(2))
+                self.groundGear.run(False, False)
 
-                # Components
-                if (self.C.middleJ.getRawButton(1) == True and self.C.middleJ.getRawButton(2) == True):
-                    self.gearSol.run(True)
-                else:
-                    self.gearSol.run(False)
-                self.groundGear.run(self.C.leftJ.getRawButton(1), self.C.middleJ.getRawButton(4))
-                self.climb.run(self.C.rightJ.getRawButton(1))
+            # Front gear
+            if (self.C.joystick.getTriggerAxis(wpilib.GenericHID.Hand.kRight) > 0.5):
+                self.gearSol.run(True)
+            else:
+                self.gearSol.run(False)
+
+            # Climb
+            self.climb.run(self.C.joystick.getStickButton(wpilib.GenericHID.Hand.kRight))
 
             wpilib.Timer.delay(0.002) # wait for a motor update time
 
