@@ -14,18 +14,13 @@ class Chassis(object):
         self.drive          = drive
         self.gyro           = gyro
         self.jDeadband      = 0.05
-        self.pidAngle       = wpilib.PIDController(0.015, 0, 0.02, self.anglePIDInput, output=self.anglePIDOutput)
+        self.pidAngle       = wpilib.PIDController(0.02, 0, 0.008, self.anglePIDInput, output=self.anglePIDOutput)
 
         self.pidAngle.setInputRange(-180.0, 180.0)
         self.pidAngle.setOutputRange(-1.0, 1.0)
         self.pidAngle.setAbsoluteTolerance(1)
         self.pidAngle.setContinuous(False)
         self.pidRotateRate = 0
-
-        self.sd = NetworkTable.getTable('SmartDashboard')
-        self.sd.putNumber('p', 0.015)
-        self.sd.putNumber('i', 0.0)
-        self.sd.putNumber('d', 0.02)
 
     def run(self, leftX, leftY, rightX, microLeft, microTop, microRight, microBackward):
         self.arcade(helpers.raiseKeepSign(leftX, 2) + 0.4*(microRight - microLeft),
@@ -69,7 +64,7 @@ class Chassis(object):
         self.drive['backRight'].set(speeds[3])
 
     def driveToAngle(self, power, angle, continuous):
-        self.pidAngle.setPID(self.sd.getNumber('p'), self.sd.getNumber('i'), self.sd.getNumber('d'))
+        self.gyro.reset()
         self.pidAngle.setSetpoint(angle)
         self.pidAngle.enable()
         self.pidAngle.setContinuous(continuous)
@@ -77,10 +72,19 @@ class Chassis(object):
         if (continuous == True): # if true, runs continuously (for driving straight)
             self.cartesian(0, -power, -self.pidRotateRate)
         else:
-            self.cartesian(0, 0, -self.pidRotateRate)
+            while (abs(self.pidAngle.getError()) > 2):
+                print(self.pidAngle.getError())
+                self.cartesian(0, 0, -self.pidRotateRate)
+
+            self.pidAngle.disable()
+            self.cartesian(0, 0, 0)
+            self.gyro.reset()
+            return;
 
     def anglePIDInput(self):
-        return helpers.normalizeAngle(self.gyro.getAngle())
+        #print(helpers.normalizeAngle(self.gyro.getAngle()))
+        #return helpers.normalizeAngle(self.gyro.getAngle())
+        return self.gyro.getAngle()
 
     def anglePIDOutput(self, value):
         self.pidRotateRate = value

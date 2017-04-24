@@ -3,6 +3,7 @@ Runs the auto routine. Called once.
 """
 from networktables import NetworkTable
 import time
+import wpilib
 
 class Autonomous(object):
     def __init__(self, drive, randy, frontGear, backGear, vision):
@@ -19,7 +20,7 @@ class Autonomous(object):
         if (self.sd.getBoolean('autoAngle') == True):
             # Drive forward
             startTime = time.clock()
-            while (time.clock() - startTime < 1.6):
+            while (time.clock() - startTime < 3):
                 self.drive.driveToAngle(0.5, 0, True)
 
             # Stop
@@ -29,18 +30,20 @@ class Autonomous(object):
             if (self.sd.getBoolean('isLeft') == True):
                 self.drive.driveToAngle(0, 60, False)
             else:
-                self.drive.driveToAngle(0, 300, False)
+                self.drive.driveToAngle(0, -60, False)
 
         # Do vision
-        self.vision.alignToPeg()
+        self.vision.alignToPeg(direction=-1)
 
         # Activate back gear
         self.backGear.run(True, 'out')
 
+        wpilib.Timer.delay(2)
+
         # Drive away
         startTime = time.clock()
-        while (time.clock() - startTime < 0.5):
-            self.drive.cartesian(-0.3, 0, 0)
+        while (time.clock() - startTime < 3):
+            self.drive.cartesian(0, 0.2, 0)
         self.drive.cartesian(0, 0, 0)
 
         # Stop Randy

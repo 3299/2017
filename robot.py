@@ -38,33 +38,37 @@ class Randy(wpilib.SampleRobot):
         # Smart Dashboard
         self.sd = NetworkTable.getTable('SmartDashboard')
         self.sd.putBoolean('autoAngle', True)
-        self.sd.putBoolean('isLeft', True)
+        self.sd.putBoolean('isLeft', False)
 
     def operatorControl(self):
         # runs when robot is enabled
         while self.isOperatorControl() and self.isEnabled():
-            '''
-            Components
-            '''
-            # Drive
-            self.drive.arcade(self.C.joystick.getRawAxis(0), self.C.joystick.getRawAxis(1), self.C.joystick.getRawAxis(2))
-
-            # Back gear
-            if (self.C.joystick.getBumper(wpilib.GenericHID.Hand.kLeft)):
-                self.groundGear.run(True, 'out')
-            elif (self.C.joystick.getTriggerAxis(wpilib.GenericHID.Hand.kLeft) > 0.5):
-                self.groundGear.run(True, 'in')
+            if (self.C.joystick.getAButton() == True):
+                self.vision.alignToPeg(direction=-1)
             else:
-                self.groundGear.run(False, False)
+                '''
+                Components
+                '''
+                # Drive
+                self.drive.arcade(self.C.joystick.getRawAxis(0), self.C.joystick.getRawAxis(1), self.C.joystick.getRawAxis(4))
 
-            # Front gear
-            if (self.C.joystick.getTriggerAxis(wpilib.GenericHID.Hand.kRight) > 0.5):
-                self.gearSol.run(True)
-            else:
-                self.gearSol.run(False)
+                # Back gear
+                if (self.C.joystick.getBumper(wpilib.GenericHID.Hand.kLeft)):
+                    print('other camera')
+                    self.groundGear.run(True, 'out')
+                elif (self.C.joystick.getTriggerAxis(wpilib.GenericHID.Hand.kLeft) > 0.5):
+                    self.groundGear.run(True, 'in')
+                else:
+                    self.groundGear.run(False, False)
 
-            # Climb
-            self.climb.run(self.C.joystick.getStickButton(wpilib.GenericHID.Hand.kRight))
+                # Front gear
+                if (self.C.joystick.getTriggerAxis(wpilib.GenericHID.Hand.kRight) > 0.5):
+                    self.gearSol.run(True)
+                else:
+                    self.gearSol.run(False)
+
+                # Climb
+                self.climb.run(self.C.joystick.getStickButton(wpilib.GenericHID.Hand.kRight))
 
             wpilib.Timer.delay(0.002) # wait for a motor update time
 
