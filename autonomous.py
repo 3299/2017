@@ -33,7 +33,7 @@ class Autonomous(object):
                 self.drive.driveToAngle(0, -60, False)
 
         # Do vision
-        self.vision.alignToPeg(direction=-1)
+        self.vision.alignToPeg(direction=1)
 
         # Activate back gear
         self.backGear.run(True, 'out')

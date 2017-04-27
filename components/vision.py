@@ -9,9 +9,10 @@ import wpilib
 import time
 
 class Vision(object):
-    def __init__(self, drive):
+    def __init__(self, drive, leds):
         self.sd = NetworkTable.getTable('SmartDashboard')
         self.drive = drive
+        self.leds = leds
         self.direction = 1
 
         #PID (rotate)
@@ -64,6 +65,9 @@ class Vision(object):
             return False
 
     def alignToPeg(self, direction):
+        # turn on LEDs
+        self.leds.set(wpilib.Relay.Value.kForward)
+
         offset = self.getPegOffset()
         self.direction = direction
 
@@ -89,6 +93,9 @@ class Vision(object):
         lastTime = time.clock()
         while (time.clock() - lastTime < 1):
             self.drive.cartesian(0, self.direction*0.4, 0)
+
+        # turn off leds
+        self.leds.set(wpilib.Relay.Value.kOff)
 
     def pidRotateInput(self):
         return self.getPegAngle()

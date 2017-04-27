@@ -17,9 +17,9 @@ class Component(object):
 
         # Init other motors
         self.collectorM  = wpilib.Talon(Mapping.collectorM)
-        self.shooterM    = wpilib.Talon(Mapping.shooterM)
-        self.climbM      = wpilib.Talon(Mapping.climbM)
-        self.groundGearM = wpilib.Talon(Mapping.groundGearM)
+        self.shooterM    = wpilib.Spark(Mapping.shooterM)
+        self.climbM      = wpilib.Spark(Mapping.climbM)
+        self.groundGearM = wpilib.Spark(Mapping.groundGearM)
 
         # Init soleniods
         self.gearSol    = wpilib.DoubleSolenoid(Mapping.gearSol['out'], Mapping.gearSol['in'])
@@ -33,8 +33,6 @@ class Component(object):
         self.allienceS  = wpilib.DigitalInput(Mapping.allienceS)
         self.accelS     = wpilib.BuiltInAccelerometer()
 
-        # Init Relay
+        # Init relays
         self.bumpPopR   = wpilib.Relay(Mapping.bumpPopR)
-
-        # Init LED strip
-        self.ledStrip   = {'r': wpilib.DigitalOutput(Mapping.ledStrip['r']), 'g': wpilib.DigitalOutput(Mapping.ledStrip['g']), 'b': wpilib.DigitalOutput(Mapping.ledStrip['b'])}
+        self.greenLEDR  = wpilib.Relay(Mapping.greenLEDR)

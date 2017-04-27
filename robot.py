@@ -13,7 +13,6 @@ from components.gear import GearSol
 from components.climber import Climber
 from components.bumpPop import BumpPop
 from components.groundGear import GroundGear
-from components.ledStrip import LedStrip
 
 from components.vision import Vision
 from autonomous import Autonomous
@@ -30,9 +29,8 @@ class Randy(wpilib.SampleRobot):
         self.climb             = Climber(self.C.climbM)
         self.bumpPop           = BumpPop(self.C.bumpPopR)
         self.groundGear        = GroundGear(self.C.groundSol, self.C.groundGearM)
-        self.ledStrip          = LedStrip(self.C.ledStrip)
         self.gearSol           = GearSol(self.C.gearSol)
-        self.vision            = Vision(self.drive)
+        self.vision            = Vision(self.drive, self.C.greenLEDR)
         self.autonomousRoutine = Autonomous(self.drive, self.bumpPop, self.gearSol, self.groundGear, self.vision)
 
         # Smart Dashboard
@@ -43,34 +41,44 @@ class Randy(wpilib.SampleRobot):
     def operatorControl(self):
         # runs when robot is enabled
         while self.isOperatorControl() and self.isEnabled():
-            if (self.C.joystick.getAButton() == True):
-                self.vision.alignToPeg(direction=-1)
+            print(self.C.gyroS.getAngle())
+            '''
+            Components
+            '''
+            # Drive
+            self.drive.arcade(self.C.joystick.getRawAxis(0), self.C.joystick.getRawAxis(1), self.C.joystick.getRawAxis(4))
+
+            # Back gear
+            if (self.C.joystick.getBumper(wpilib.GenericHID.Hand.kLeft)):
+                print('other camera')
+                self.groundGear.run(True, 'out')
+            elif (self.C.joystick.getTriggerAxis(wpilib.GenericHID.Hand.kLeft) > 0.5):
+                self.groundGear.run(True, 'in')
             else:
-                '''
-                Components
-                '''
-                # Drive
-                self.drive.arcade(self.C.joystick.getRawAxis(0), self.C.joystick.getRawAxis(1), self.C.joystick.getRawAxis(4))
+                self.groundGear.run(False, False)
 
-                # Back gear
-                if (self.C.joystick.getBumper(wpilib.GenericHID.Hand.kLeft)):
-                    print('other camera')
-                    self.groundGear.run(True, 'out')
-                elif (self.C.joystick.getTriggerAxis(wpilib.GenericHID.Hand.kLeft) > 0.5):
-                    self.groundGear.run(True, 'in')
-                else:
-                    self.groundGear.run(False, False)
+            # Front gear
+            if (self.C.joystick.getTriggerAxis(wpilib.GenericHID.Hand.kRight) > 0.5):
+                self.gearSol.run(True)
+            else:
+                self.gearSol.run(False)
 
-                # Front gear
-                if (self.C.joystick.getTriggerAxis(wpilib.GenericHID.Hand.kRight) > 0.5):
-                    self.gearSol.run(True)
-                else:
-                    self.gearSol.run(False)
+            # LEDs
+            if (self.C.joystick.getStickButton(wpilib.GenericHID.Hand.kRight)):
+                self.C.greenLEDR.set(wpilib.Relay.Value.kForward)
+            else:
+                self.C.greenLEDR.set(wpilib.Relay.Value.kOff)
 
-                # Climb
-                self.climb.run(self.C.joystick.getStickButton(wpilib.GenericHID.Hand.kRight))
+            # Climb
+            self.climb.run(self.C.joystick.getBumper(wpilib.GenericHID.Hand.kRight))
 
-            wpilib.Timer.delay(0.002) # wait for a motor update time
+            # Shooter
+            if (self.C.joystick.getAButton()):
+                self.C.shooterM.set(-1)
+            else:
+                self.C.shooterM.set(0)
+
+        wpilib.Timer.delay(0.002) # wait for a motor update time
 
     def test(self):
         """This function is called periodically during test mode."""

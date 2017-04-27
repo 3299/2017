@@ -18,7 +18,7 @@ class Map(object):
         self.climbM      = 2
 
         self.collectorM  = 5
-        self.shooterM    = 6
+        self.shooterM    = 9
         self.groundGearM = 4
 
         # Soleniods
@@ -31,6 +31,4 @@ class Map(object):
 
         # Relays
         self.bumpPopR    = 0
-
-        # LED strip (connected to DIO).
-        self.ledStrip    = {'r': 9, 'g': 7, 'b': 8}
+        self.greenLEDR   = 1
