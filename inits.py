@@ -16,10 +16,10 @@ class Component(object):
         self.driveTrain['backLeft'].setInverted(True)
 
         # Init other motors
-        self.collectorM  = wpilib.Talon(Mapping.collectorM)
         self.shooterM    = wpilib.Spark(Mapping.shooterM)
+        self.hopperM     = wpilib.Spark(Mapping.hopperM)
         self.climbM      = wpilib.Spark(Mapping.climbM)
-        self.groundGearM = wpilib.Spark(Mapping.groundGearM)
+        self.groundGearM = wpilib.Talon(Mapping.groundGearM)
 
         # Init soleniods
         self.gearSol    = wpilib.DoubleSolenoid(Mapping.gearSol['out'], Mapping.gearSol['in'])
@@ -31,7 +31,8 @@ class Component(object):
         # Init sensors
         self.gyroS      = wpilib.ADXRS450_Gyro(Mapping.gyroS)
         self.allienceS  = wpilib.DigitalInput(Mapping.allienceS)
-        self.accelS     = wpilib.BuiltInAccelerometer()
+        self.shooterS   = wpilib.DigitalInput(Mapping.shooterS)
+        self.hopperS    = wpilib.DigitalInput(Mapping.hopperS)
 
         # Init relays
         self.bumpPopR   = wpilib.Relay(Mapping.bumpPopR)

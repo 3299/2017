@@ -16,9 +16,9 @@ class Map(object):
         self.backRightM  = 0
 
         self.climbM      = 2
-
         self.collectorM  = 5
         self.shooterM    = 9
+        self.hopperM     = 8
         self.groundGearM = 4
 
         # Soleniods
@@ -28,6 +28,8 @@ class Map(object):
         # Sensors have suffix 'S'. Gyro uses SPI, everything else uses the DIO.
         self.gyroS       = 0
         self.allienceS   = 0
+        self.shooterS    = 1
+        self.hopperS     = 2
 
         # Relays
         self.bumpPopR    = 0

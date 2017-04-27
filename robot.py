@@ -12,6 +12,7 @@ from components.chassis import Chassis
 from components.gear import GearSol
 from components.climber import Climber
 from components.bumpPop import BumpPop
+from components.shooter import Shooter
 from components.groundGear import GroundGear
 
 from components.vision import Vision
@@ -30,6 +31,7 @@ class Randy(wpilib.SampleRobot):
         self.bumpPop           = BumpPop(self.C.bumpPopR)
         self.groundGear        = GroundGear(self.C.groundSol, self.C.groundGearM)
         self.gearSol           = GearSol(self.C.gearSol)
+        self.shooter           = Shooter(self.C.shooterM, self.C.hopperM, self.C.shooterS, self.C.hopperS)
         self.vision            = Vision(self.drive, self.C.greenLEDR)
         self.autonomousRoutine = Autonomous(self.drive, self.bumpPop, self.gearSol, self.groundGear, self.vision)
 
@@ -41,7 +43,6 @@ class Randy(wpilib.SampleRobot):
     def operatorControl(self):
         # runs when robot is enabled
         while self.isOperatorControl() and self.isEnabled():
-            print(self.C.gyroS.getAngle())
             '''
             Components
             '''
@@ -50,7 +51,6 @@ class Randy(wpilib.SampleRobot):
 
             # Back gear
             if (self.C.joystick.getBumper(wpilib.GenericHID.Hand.kLeft)):
-                print('other camera')
                 self.groundGear.run(True, 'out')
             elif (self.C.joystick.getTriggerAxis(wpilib.GenericHID.Hand.kLeft) > 0.5):
                 self.groundGear.run(True, 'in')
@@ -74,18 +74,18 @@ class Randy(wpilib.SampleRobot):
 
             # Shooter
             if (self.C.joystick.getAButton()):
-                self.C.shooterM.set(-1)
+                self.shooter.run(True)
             else:
-                self.C.shooterM.set(0)
+                self.shooter.run(False)
 
-        wpilib.Timer.delay(0.002) # wait for a motor update time
+            wpilib.Timer.delay(0.002) # wait for a motor update time
 
     def test(self):
         """This function is called periodically during test mode."""
 
     def autonomous(self):
         """Runs once during autonomous."""
-        self.autonomousRoutine.run() # see autonomous.py
+        #self.autonomousRoutine.run() # see autonomous.py
 
 if __name__ == "__main__":
     wpilib.run(Randy)
