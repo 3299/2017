@@ -14,7 +14,7 @@ class Chassis(object):
         self.drive          = drive
         self.gyro           = gyro
         self.jDeadband      = 0.05
-        self.pidAngle       = wpilib.PIDController(0.02, 0, 0.008, self.anglePIDInput, output=self.anglePIDOutput)
+        self.pidAngle       = wpilib.PIDController(0.4, 0, 0.1, self.anglePIDInput, output=self.anglePIDOutput)
 
         self.pidAngle.setInputRange(-180.0, 180.0)
         self.pidAngle.setOutputRange(-1.0, 1.0)
@@ -70,6 +70,7 @@ class Chassis(object):
         self.pidAngle.setContinuous(continuous)
 
         if (continuous == True): # if true, runs continuously (for driving straight)
+            print(self.pidRotateRate)
             self.cartesian(0, -power, -self.pidRotateRate)
         else:
             while (abs(self.pidAngle.getError()) > 2):
@@ -82,8 +83,6 @@ class Chassis(object):
             return;
 
     def anglePIDInput(self):
-        #print(helpers.normalizeAngle(self.gyro.getAngle()))
-        #return helpers.normalizeAngle(self.gyro.getAngle())
         return self.gyro.getAngle()
 
     def anglePIDOutput(self, value):

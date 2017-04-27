@@ -37,7 +37,7 @@ class Randy(wpilib.SampleRobot):
 
         # Smart Dashboard
         self.sd = NetworkTable.getTable('SmartDashboard')
-        self.sd.putBoolean('autoAngle', True)
+        self.sd.putBoolean('autoAngle', False)
         self.sd.putBoolean('isLeft', False)
 
     def operatorControl(self):
@@ -85,7 +85,7 @@ class Randy(wpilib.SampleRobot):
 
     def autonomous(self):
         """Runs once during autonomous."""
-        #self.autonomousRoutine.run() # see autonomous.py
+        self.autonomousRoutine.run() # see autonomous.py
 
 if __name__ == "__main__":
     wpilib.run(Randy)

@@ -65,37 +65,40 @@ class Vision(object):
             return False
 
     def alignToPeg(self, direction):
-        # turn on LEDs
-        self.leds.set(wpilib.Relay.Value.kForward)
+        try:
+            # turn on LEDs
+            self.leds.set(wpilib.Relay.Value.kForward)
 
-        offset = self.getPegOffset()
-        self.direction = direction
+            offset = self.getPegOffset()
+            self.direction = direction
 
-        # rotate
-        self.pidRotate.setSetpoint(0)
-        self.pidRotate.enable()
-        # strafe
-        self.pidStrafe.setSetpoint(0.5)
-        self.pidStrafe.enable()
+            # rotate
+            self.pidRotate.setSetpoint(0)
+            self.pidRotate.enable()
+            # strafe
+            self.pidStrafe.setSetpoint(0.5)
+            self.pidStrafe.enable()
 
-        # distance
-        self.pidDistance.setSetpoint(0.1)
-        self.pidDistance.enable()
+            # distance
+            self.pidDistance.setSetpoint(0.1)
+            self.pidDistance.enable()
 
-        while (abs(self.pidStrafeInput() - 0.5) > 0.01 and self.pidDistanceInput() < 0.11 and self.sd.getNumber('BLOB_COUNT') != 0):
-            self.drive.cartesian(self.pidStrafeRate*self.direction, 0.3 * self.direction, 0)#, self.pidRotationRate)
+            while (abs(self.pidStrafeInput() - 0.5) > 0.01 and self.pidDistanceInput() < 0.11 and self.sd.getNumber('BLOB_COUNT') != 0):
+                self.drive.cartesian(self.pidStrafeRate*self.direction, 0.3 * self.direction, 0)#, self.pidRotationRate)
 
-            wpilib.Timer.delay(0.002) # wait for a motor update time
+                wpilib.Timer.delay(0.002) # wait for a motor update time
 
-        self.drive.cartesian(0, 0, 0)
+            self.drive.cartesian(0, 0, 0)
 
-        # small boost at the end to go all the way
-        lastTime = time.clock()
-        while (time.clock() - lastTime < 1):
-            self.drive.cartesian(0, self.direction*0.4, 0)
+            # small boost at the end to go all the way
+            lastTime = time.clock()
+            while (time.clock() - lastTime < 1):
+                self.drive.cartesian(0, self.direction*0.4, 0)
 
-        # turn off leds
-        self.leds.set(wpilib.Relay.Value.kOff)
+            # turn off leds
+            self.leds.set(wpilib.Relay.Value.kOff)
+        except:
+            return False
 
     def pidRotateInput(self):
         return self.getPegAngle()
