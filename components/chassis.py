@@ -40,6 +40,11 @@ class Chassis(object):
         speeds[2] = x + y + rotation
         speeds[3] = -x + y - rotation
 
+        if (max(speeds) > 1):
+            maxSpeed = max(speeds)
+            for i in range (0, 4):
+                speeds[i] = maxSpeed / speeds[i]
+
         self.drive['frontLeft'].set(speeds[0])
         self.drive['frontRight'].set(speeds[1])
         self.drive['backLeft'].set(speeds[2])

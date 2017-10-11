@@ -4,11 +4,6 @@ Defines port numbers for motors and sensors.
 
 class Map(object):
     def __init__(self):
-        # Joysticks have suffix 'J'
-        self.leftJ       = 0
-        self.middleJ     = 1
-        self.rightJ      = 2
-
         # Motors have suffix 'M'. All motors use PWM.
         self.frontLeftM  = 3
         self.frontRightM = 1

@@ -20,8 +20,8 @@ class Autonomous(object):
         if (self.sd.getBoolean('autoAngle') == True):
             # Drive forward
             startTime = time.clock()
-            while (time.clock() - startTime < 2):
-                self.drive.driveToAngle(-0.5, 0, True)
+            while (time.clock() - startTime < 2.3):
+                self.drive.driveToAngle(-0.65, 0, True)
 
             # Stop
             self.drive.cartesian(0, 0, 0)
@@ -43,25 +43,12 @@ class Autonomous(object):
         Center peg
         '''
         startTime = time.clock()
-        while (time.clock() - startTime < 4.25):
+        while (time.clock() - startTime < 5.2):
             self.drive.cartesian(0, -0.3, 0.025)
         self.drive.cartesian(0, 0, 0)
 
         # Activate front gear
         self.frontGear.run(True)
-
-        '''
-        wpilib.Timer.delay(3)
-
-        self.backGear.run(False, False)
-        wpilib.Timer.delay(2)
-
-        # Drive away
-        startTime = time.clock()
-        while (time.clock() - startTime < 2):
-            self.drive.cartesian(0, -0.4, 0)
-        self.drive.cartesian(0, 0, 0)
-        '''
 
         # Stop Randy
         self.randy.run(False)

@@ -40,6 +40,16 @@ class Randy(wpilib.SampleRobot):
         self.sd.putBoolean('autoAngle', False)
         self.sd.putBoolean('isLeft', False)
 
+        # Joysticks or xBox controller?
+        self.controller = 'joysticks' # || joysticks
+
+        if (self.controller == 'joysticks'):
+            self.C.leftJ = wpilib.Joystick(0)
+            self.C.middleJ = wpilib.Joystick(1)
+            self.C.rightJ = wpilib.Joystick(2)
+        elif (self.controller == 'xbox'):
+            self.C.joystick = wpilib.XboxController(0)
+
     def operatorControl(self):
         # runs when robot is enabled
         while self.isOperatorControl() and self.isEnabled():
@@ -47,36 +57,65 @@ class Randy(wpilib.SampleRobot):
             Components
             '''
             # Drive
-            self.drive.arcade(self.C.joystick.getRawAxis(0), self.C.joystick.getRawAxis(1), self.C.joystick.getRawAxis(4))
+            if (self.controller == 'joysticks'):
+                self.drive.run(self.C.leftJ.getX(),
+                               self.C.leftJ.getY(),
+                               self.C.middleJ.getX(),
+                               self.C.leftJ.getRawButton(4),
+                               self.C.leftJ.getRawButton(3),
+                               self.C.leftJ.getRawButton(5),
+                               self.C.leftJ.getRawButton(2))
+
+            elif (self.controller == 'xbox'):
+                self.drive.arcade(self.C.joystick.getRawAxis(0), self.C.joystick.getRawAxis(1), self.C.joystick.getRawAxis(4))
 
             # Back gear
-            if (self.C.joystick.getBumper(wpilib.GenericHID.Hand.kLeft)):
-                self.groundGear.run(True, 'out')
-            elif (self.C.joystick.getTriggerAxis(wpilib.GenericHID.Hand.kLeft) > 0.5):
-                self.groundGear.run(True, 'in')
-            else:
-                self.groundGear.run(False, False)
+            if (self.controller == 'joysticks'):
+                if (self.C.middleJ.getRawButton(4)):
+                    self.groundGear.run(True, 'out')
+                elif (self.C.middleJ.getRawButton(5)):
+                    self.groundGear.run(True, 'in')
+                else:
+                    self.groundGear.run(False, False)
+
+            elif (self.controller == 'xbox'):
+                if (self.C.joystick.getBumper(wpilib.GenericHID.Hand.kLeft)):
+                    self.groundGear.run(True, 'out')
+                elif (self.C.joystick.getTriggerAxis(wpilib.GenericHID.Hand.kLeft) > 0.5):
+                    self.groundGear.run(True, 'in')
+                else:
+                    self.groundGear.run(False, False)
 
             # Front gear
-            if (self.C.joystick.getTriggerAxis(wpilib.GenericHID.Hand.kRight) > 0.5):
-                self.gearSol.run(True)
-            else:
-                self.gearSol.run(False)
+            if (self.controller == 'joysticks'):
+                if (self.C.middleJ.getRawButton(1) == True and self.C.middleJ.getRawButton(2) == True):
+                    self.gearSol.run(True)
+                else:
+                    self.gearSol.run(False)
+
+            elif (self.controller == 'xbox'):
+                if (self.C.joystick.getTriggerAxis(wpilib.GenericHID.Hand.kRight) > 0.5):
+                    self.gearSol.run(True)
+                else:
+                    self.gearSol.run(False)
 
             # LEDs
-            if (self.C.joystick.getStickButton(wpilib.GenericHID.Hand.kRight)):
-                self.C.greenLEDR.set(wpilib.Relay.Value.kForward)
-            else:
-                self.C.greenLEDR.set(wpilib.Relay.Value.kOff)
+            if (self.controller == 'xbox'):
+                if (self.C.joystick.getStickButton(wpilib.GenericHID.Hand.kRight)):
+                    self.C.greenLEDR.set(wpilib.Relay.Value.kForward)
+                else:
+                    self.C.greenLEDR.set(wpilib.Relay.Value.kOff)
+            elif (self.controller == 'joysticks'):
+                if (self.C.middleJ.getRawButton(3)):
+                    self.C.greenLEDR.set(wpilib.Relay.Value.kForward)
+                else:
+                    self.C.greenLEDR.set(wpilib.Relay.Value.kOff)
 
             # Climb
-            self.climb.run(self.C.joystick.getBumper(wpilib.GenericHID.Hand.kRight))
-
-            # Shooter
-            if (self.C.joystick.getAButton()):
-                self.shooter.run(True)
-            else:
-                self.shooter.run(False)
+            if (self.controller == 'joysticks'):
+                self.climb.run(self.C.rightJ.getRawButton(1))
+            elif (self.controller == 'xbox'):
+                self.climb.run(self.C.joystick.getBumper(wpilib.GenericHID.Hand.kRight))
 
             wpilib.Timer.delay(0.002) # wait for a motor update time
 
